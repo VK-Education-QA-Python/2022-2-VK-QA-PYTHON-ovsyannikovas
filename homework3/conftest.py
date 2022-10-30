@@ -82,5 +82,13 @@ def logger(temp_dir, config):
 
 
 @pytest.fixture(scope='session')
+def credentials():
+    user = 'minipersik02@gmail.com'
+    password = 'testpass'
+
+    return user, password
+
+
+@pytest.fixture(scope='session')
 def api_client(credentials, config):
     return ApiClient(base_url=config['url'], login=credentials[0], password=credentials[1])

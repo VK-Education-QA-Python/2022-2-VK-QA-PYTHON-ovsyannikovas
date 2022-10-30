@@ -1,14 +1,6 @@
 import pytest
 
 
-@pytest.fixture(scope='session')
-def credentials():
-    user = 'minipersik02@gmail.com'
-    password = 'testpass'
-
-    return user, password
-
-
 class TestLkApi:
     @pytest.fixture(scope='class', autouse=True)
     def setup(self, api_client):
@@ -20,9 +12,16 @@ class TestLkApi:
                'https://target-sandbox.my.com/dashboard/'
 
     @pytest.mark.API
+    def test_api_campaign_creation(self, api_client):
+        campaign_id = api_client.create_campaign()
+        print(campaign_id)
+        assert api_client.campaign_in_campaigns(campaign_id)
+        api_client.delete_campaign(campaign_id)
+        assert api_client.campaign_in_campaigns(campaign_id) is False
+
+    @pytest.mark.API
     def test_api_segment_creation(self, api_client):
         segment_id = api_client.create_segment()
-        print(segment_id)
-        # assert api_client.segment_in_segments(segment_id)
-        response = api_client.delete_segment(segment_id)
-        print(response)
+        assert api_client.segment_in_segments(segment_id)
+        api_client.delete_segment(segment_id)
+        assert api_client.segment_in_segments(segment_id) is False
