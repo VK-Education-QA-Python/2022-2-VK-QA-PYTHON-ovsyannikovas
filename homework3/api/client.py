@@ -108,7 +108,6 @@ class ApiClient:
         url = "https://target-sandbox.my.com/api/v2/content/static.json"
         response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
                                      allow_redirects=False).json()
-        print(response)
         img_id_256 = response['id']
 
         files = {'file': ('files/600.jpg', open('files/600.jpg', 'rb'), 'multipart/form-data')}
@@ -497,17 +496,21 @@ class ApiClient:
         return response.json()['id']
 
     def delete_campaign(self, campaign_id):
-        data = [...]
+        data = [
+            {
+                "id": campaign_id,
+                "status": "deleted"
+            }
+        ]
 
-        url = ...
+        url = "https://target-sandbox.my.com/api/v2/campaigns/mass_action.json"
 
-        return self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False).json()
+        self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False)
 
     def campaign_in_campaigns(self, campaign_id):
-        url = "https://target-sandbox.my.com/api/v2/banners.json"
+        url = "https://target-sandbox.my.com/api/v2/banners/delivery.json"
         campaings_list = self.session.get(url=url, headers=self.get_post_headers()).json()
-        campaigns = campaings_list["items"]
-        print(campaigns)
+        campaigns = campaings_list["pending"]
         for campaign in campaigns:
             if campaign["campaign_id"] == campaign_id:
                 return True
