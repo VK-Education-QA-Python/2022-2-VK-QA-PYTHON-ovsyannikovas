@@ -103,13 +103,20 @@ class ApiClient:
         return False
 
     def create_campaign(self, title="Новая кампания test"):
-        files = {'file': ('files/userdata.jpg', open('files/userdata.jpg', 'rb'), 'multipart/form-data')}
+        files = {'file': ('files/256.png', open('files/256.png', 'rb'), 'multipart/form-data')}
 
         url = "https://target-sandbox.my.com/api/v2/content/static.json"
         response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
                                      allow_redirects=False).json()
         print(response)
-        img_id = response['id']
+        img_id_256 = response['id']
+
+        files = {'file': ('files/600.jpg', open('files/600.jpg', 'rb'), 'multipart/form-data')}
+
+        url = "https://target-sandbox.my.com/api/v2/content/static.json"
+        response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
+                                     allow_redirects=False).json()
+        img_id_600 = response['id']
 
         url = "https://target-sandbox.my.com/api/v1/urls/?url=vk.com"
         response = self.session.get(url=url, headers=self.get_post_headers(),
@@ -118,10 +125,10 @@ class ApiClient:
 
         data = {
             "name": title,
-            # "read_only": False,
-            # "conversion_funnel_id": None,
+            "read_only": False,
+            "conversion_funnel_id": None,
             "objective": "traffic",
-            # "enable_offline_goals": False,
+            "enable_offline_goals": False,
             "targetings": {
                 "split_audience": [
                     1,
@@ -207,7 +214,7 @@ class ApiClient:
                         74,
                         75
                     ],
-                    # "expand": True
+                    "expand": True
                 },
                 "geo": {
                     "regions": [
@@ -416,15 +423,15 @@ class ApiClient:
                 "mobile_vendors": [],
                 "mobile_operators": []
             },
-            # "age_restrictions": None,
-            # "date_start": None,
-            # "date_end": None,
+            "age_restrictions": None,
+            "date_start": None,
+            "date_end": None,
             "autobidding_mode": "second_price_mean",
-            # "budget_limit_day": None,
-            # "budget_limit": None,
+            "budget_limit_day": None,
+            "budget_limit": None,
             "mixing": "fastest",
-            # "utm": None,
-            # "enable_utm": True,
+            "utm": None,
+            "enable_utm": True,
             "price": "1.64",
             "max_price": "0",
             "package_id": 814,
@@ -466,16 +473,16 @@ class ApiClient:
                     },
                     "content": {
                         "image_600x600_slide_1": {
-                            "id": img_id
+                            "id": img_id_600
                         },
                         "image_600x600_slide_2": {
-                            "id": img_id
+                            "id": img_id_600
                         },
                         "image_600x600_slide_3": {
-                            "id": img_id
+                            "id": img_id_600
                         },
                         "icon_256x256": {
-                            "id": img_id
+                            "id": img_id_256
                         }
                     },
                     "name": ""
@@ -484,25 +491,24 @@ class ApiClient:
         }
 
         url = "https://target-sandbox.my.com/api/v2/campaigns.json"
-        response = self.session.post(url=url, data=data, headers=self.get_post_headers(),
+        response = self.session.post(url=url, json=data, headers=self.get_post_headers(),
                                      allow_redirects=False)
 
-        return response.json()
+        return response.json()['id']
 
+    def delete_campaign(self, campaign_id):
+        data = [...]
 
-def delete_campaign(self, campaign_id):
-    data = [...]
+        url = ...
 
-    url = ...
+        return self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False).json()
 
-    return self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False).json()
-
-
-def campaign_in_campaigns(self, segment_id):
-    url = ...
-    segments_list = dict(self.session.get(url=url, headers=self.get_post_headers()).json())
-    segments = segments_list["items"]
-    for segment in segments:
-        if segment["id"] == segment_id:
-            return True
-    return False
+    def campaign_in_campaigns(self, campaign_id):
+        url = "https://target-sandbox.my.com/api/v2/banners.json"
+        campaings_list = self.session.get(url=url, headers=self.get_post_headers()).json()
+        campaigns = campaings_list["items"]
+        print(campaigns)
+        for campaign in campaigns:
+            if campaign["campaign_id"] == campaign_id:
+                return True
+        return False
