@@ -1,49 +1,40 @@
-import os
-from contextlib import contextmanager
-
-import allure
 import pytest
-from _pytest.fixtures import FixtureRequest
-from ui.pages.base_page import BasePage
-from ui.pages.main_page import MainPage
 
-CLICK_RETRY = 3
+from api.builder import Builder
 
 
-class BaseCase:
-    driver = None
-
-    @contextmanager
-    def switch_to_window(self, current, close=False):
-        for w in self.driver.window_handles:
-            if w != current:
-                self.driver.switch_to.window(w)
-                break
-        yield
-        if close:
-            self.driver.close()
-        self.driver.switch_to.window(current)
+class ApiBase:
+    authorize = True
 
     @pytest.fixture(scope='function', autouse=True)
-    def ui_report(self, driver, request, temp_dir):
-        failed_test_count = request.session.testsfailed
-        yield
-        if request.session.testsfailed > failed_test_count:
-            browser_logs = os.path.join(temp_dir, 'browser.log')
-            with open(browser_logs, 'w') as f:
-                for i in driver.get_log('browser'):
-                    f.write(f"{i['level']} - {i['source']}\n{i['message']}\n")
-            screenshot_path = os.path.join(temp_dir, 'failed.png')
-            self.driver.save_screenshot(filename=screenshot_path)
-            allure.attach.file(screenshot_path, 'failed.png', allure.attachment_type.PNG)
-            with open(browser_logs, 'r') as f:
-                allure.attach(f.read(), 'test.log', allure.attachment_type.TEXT)
+    def setup(self, api_client):
+        self.api_client = api_client
+        self.builder = Builder()
 
-    @pytest.fixture(scope='function', autouse=True)
-    def setup(self, driver, config, logger, request: FixtureRequest):
-        self.driver = driver
-        self.config = config
-        self.logger = logger
+        if self.authorize:
+            self.api_client.post_login()
 
-        self.base_page: BasePage = (request.getfixturevalue('base_page'))
-        self.main_page: MainPage = (request.getfixturevalue('main_page'))
+    def check_topic_in_feed(self, topic_id, text):
+        found = False
+        all_posts_dict = self.api_client.get_feed()
+        for posts in all_posts_dict:
+            for post in posts:
+                if post['object']['id'] == topic_id and post['object']['text'] == text:
+                    found = True
+                    break
+        assert found is True, f'Expected to find topic with id "{topic_id}" and text "{text}" in feed, but got nothing'
+
+    def create_topic(self, title, text, publish=False):
+        req = self.api_client.post_topic_create(title=title, text=text, publish=publish)
+        assert req['success'] is True
+
+        return req['redirect_url'].split('/')[-2]
+
+    @pytest.fixture(scope='function')
+    def topic(self):
+        topic_data = self.builder.topic()
+        topic_id = self.create_topic(text=topic_data.text, title=topic_data.title, publish=self.publish)
+        topic_data.id = topic_id
+        yield topic_data
+
+        self.api_client.post_topic_delete(topic_id=topic_id)
