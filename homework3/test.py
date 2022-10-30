@@ -20,13 +20,9 @@ class TestLkApi:
                'https://target-sandbox.my.com/dashboard/'
 
     @pytest.mark.API
-    def test_campaign_creation(self, api_client):
-        api_client.session.get('https://target-sandbox.my.com/dashboard/')
-
-    def test_browser(self):
-        from selenium import webdriver
-        from webdriver_manager.chrome import ChromeDriverManager
-        driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
-        driver.get("https://target-sandbox.my.com/")
-        import time;
-        time.sleep(6000)
+    def test_api_segment_creation(self, api_client):
+        segment_id = api_client.create_segment()
+        print(segment_id)
+        # assert api_client.segment_in_segments(segment_id)
+        response = api_client.delete_segment(segment_id)
+        print(response)
