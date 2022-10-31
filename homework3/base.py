@@ -1,5 +1,6 @@
 import pytest
 
+
 class ApiBase:
     authorize = True
 
@@ -10,27 +11,20 @@ class ApiBase:
         if self.authorize:
             self.api_client.post_login()
 
-    def check_topic_in_feed(self, topic_id, text):
-        found = False
-        all_posts_dict = self.api_client.get_feed()
-        for posts in all_posts_dict:
-            for post in posts:
-                if post['object']['id'] == topic_id and post['object']['text'] == text:
-                    found = True
-                    break
-        assert found is True, f'Expected to find topic with id "{topic_id}" and text "{text}" in feed, but got nothing'
+    def create_campaign(self, title='Новая кампания test'):
+        return self.api_client.create_campaign(title=title)
 
-    def create_topic(self, title, text, publish=False):
-        req = self.api_client.post_topic_create(title=title, text=text, publish=publish)
-        assert req['success'] is True
+    def campaign_in_campaigns(self, campaign_id):
+        return self.api_client.campaign_in_campaigns(campaign_id)
 
-        return req['redirect_url'].split('/')[-2]
+    def delete_campaign(self, campaign_id):
+        self.api_client.delete_campaign(campaign_id)
 
-    @pytest.fixture(scope='function')
-    def topic(self):
-        topic_data = self.builder.topic()
-        topic_id = self.create_topic(text=topic_data.text, title=topic_data.title, publish=self.publish)
-        topic_data.id = topic_id
-        yield topic_data
+    def create_segment(self, title='Новый аудиторный сегмент test', segment_type='remarketing_player'):
+        return self.api_client.create_segment(title=title, segment_type=segment_type)
 
-        self.api_client.post_topic_delete(topic_id=topic_id)
+    def segment_in_segments(self, segment_id):
+        return self.api_client.segment_in_segments(segment_id)
+
+    def delete_segment(self, segment_id):
+        self.api_client.delete_segment(segment_id)

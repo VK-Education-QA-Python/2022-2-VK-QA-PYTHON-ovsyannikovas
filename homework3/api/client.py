@@ -4,18 +4,6 @@ from urllib.parse import urljoin
 import requests
 
 
-class ApiClientException(Exception):
-    ...
-
-
-class ResponseStatusCodeException(Exception):
-    pass
-
-
-class RespondErrorException(Exception):
-    pass
-
-
 class ApiClient:
 
     def __init__(self, base_url: str, login: str, password: str, repo_root: str):
