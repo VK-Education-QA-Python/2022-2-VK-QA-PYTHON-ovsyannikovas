@@ -24,3 +24,12 @@ class TestLkApi:
         assert api_client.segment_in_segments(segment_id)
         api_client.delete_segment(segment_id)
         assert api_client.segment_in_segments(segment_id) is False
+
+    @pytest.mark.API
+    def test_api_segment_creation_with_group(self, api_client):
+        api_client.add_group()
+        segment_id = api_client.create_segment(segment_type='')
+        assert api_client.segment_in_segments(segment_id)
+        api_client.delete_segment(segment_id)
+        assert api_client.segment_in_segments(segment_id) is False
+        api_client.delete_group()
