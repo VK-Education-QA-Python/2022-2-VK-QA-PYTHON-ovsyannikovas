@@ -12,12 +12,14 @@ class BaseCase:
     driver = None
 
     @pytest.fixture(scope='function', autouse=True)
-    def setup(self, driver, config, logger, request: FixtureRequest):
+    def setup(self, driver, config, request: FixtureRequest):
         self.driver = driver
         self.config = config
-        self.logger = logger
 
-        self.base_page:BasePage = (request.getfixturevalue('base_page'))
-        self.main_page:MainPage = (request.getfixturevalue('main_page'))
+        self.base_page: BasePage = request.getfixturevalue('base_page')
+        self.main_page: MainPage = (request.getfixturevalue('main_page'))
         self.campaigns_page: CampaignsPage = (request.getfixturevalue('campaigns_page'))
         self.segments_page: SegmentsPage = (request.getfixturevalue('segments_page'))
+
+        # page = self.__new__(self.__class__)
+        # page.authorize()

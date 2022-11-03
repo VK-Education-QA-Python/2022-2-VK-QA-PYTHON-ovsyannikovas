@@ -1,11 +1,15 @@
+import allure
+import pytest
+
 from ui.locators import basic_locators
-from ui.pages.main_page import MainPage
+from ui.pages.main_page import BasePage
 
 
-class CampaignsPage(MainPage):
+class CampaignsPage(BasePage):
 
     locators = basic_locators.CampaignsPageLocators()
 
+    @allure.step("Создание кампании")
     def create_campaign(self, file_path):
         url = "https://vk.com/vkedu"
         # button1 or button2 ?
@@ -14,7 +18,7 @@ class CampaignsPage(MainPage):
         self.enter(self.locators.INPUT_URL, url)
         self.find(self.locators.PRICE_SLIDER, timeout=5)
         self.click(self.locators.BUDGET_SETTING)
-        self.click(self.locators.FORMAT_ITEM)
+        self.click(self.locators.FORMAT_ITEM, timeout=5)
         for i in range(3):
             self.click(self.locators.slide(i))
             self.upload_file(self.locators.UPLOAD_IMG600_BUTTON, file_path)

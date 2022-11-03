@@ -29,6 +29,13 @@ def base_page(driver):
 
 
 @pytest.fixture
+def get_page(driver, ClassPage):
+    page = ClassPage(driver=driver)
+    page.authorize()
+    return page
+
+
+@pytest.fixture
 def main_page(driver):
     main_page = MainPage(driver=driver)
     main_page.authorize()

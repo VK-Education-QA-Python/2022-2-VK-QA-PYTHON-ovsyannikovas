@@ -1,3 +1,5 @@
+import allure
+
 from ui.locators import basic_locators
 from ui.pages.base_page import BasePage
 
@@ -14,9 +16,11 @@ class MainPage(BasePage):
         password_field.send_keys(password)
         self.click(self.locators.LOGIN_BUTTON_FORM)
 
+    @allure.step("Переход на страницу кампаний")
     def go_to_campaigns_page(self):
         self.click(self.locators.CAMPAIGNS)
 
+    @allure.step("Переход на страницу аудиторий")
     def go_to_segments_page(self):
         self.click(self.locators.SEGMENTS)
 

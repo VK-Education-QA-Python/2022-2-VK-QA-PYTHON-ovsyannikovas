@@ -36,28 +36,12 @@ def base_temp_dir():
 
 @pytest.fixture(scope='function')
 def temp_dir(base_temp_dir, request):
-    test_dir = os.path.join(base_temp_dir, request._pyfuncitem.nodeid)
+    test_dir = '\\'.join((base_temp_dir, request._pyfuncitem.nodeid.replace('::', '\\')))
+    # test_dir = os.path.join(base_temp_dir, request._pyfuncitem.nodeid)
     os.makedirs(test_dir)
     return test_dir
 
 
-@pytest.fixture(scope='function')
-def logger(temp_dir, config):
-    log_formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')
-    log_file = os.path.join(temp_dir, 'test.log')
-    log_level = logging.DEBUG if config['debug_log'] else logging.INFO
-
-    file_handler = logging.FileHandler(log_file, 'w')
-    file_handler.setFormatter(log_formatter)
-    file_handler.setLevel(log_level)
-
-    log = logging.getLogger('test')
-    log.propagate = False
-    log.setLevel(log_level)
-    log.handlers.clear()
-    log.addHandler(file_handler)
-
-    yield log
-
-    for handler in log.handlers:
-        handler.close()
+@pytest.fixture
+def file_path(repo_root, filename='userdata.jpg'):
+    return os.path.join(repo_root, 'files', filename)
