@@ -16,8 +16,7 @@ class BaseCase:
         self.driver = driver
         self.config = config
 
-        self.base_page: BasePage = request.getfixturevalue('base_page')
-        self.main_page: MainPage = (request.getfixturevalue('main_page'))
+        self.main_page:MainPage = (request.getfixturevalue('main_page'))
         self.campaigns_page: CampaignsPage = (request.getfixturevalue('campaigns_page'))
         self.segments_page: SegmentsPage = (request.getfixturevalue('segments_page'))
 

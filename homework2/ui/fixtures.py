@@ -15,7 +15,7 @@ def driver(config):
     chrome_options = webdriver.ChromeOptions()
     if headless:
         chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager(version=version).install(),
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),
                               options=chrome_options)
     driver.get(url)
     driver.maximize_window()
@@ -23,16 +23,11 @@ def driver(config):
     driver.quit()
 
 
-@pytest.fixture
-def base_page(driver):
-    return BasePage(driver=driver)
-
-
-@pytest.fixture
-def get_page(driver, ClassPage):
-    page = ClassPage(driver=driver)
-    page.authorize()
-    return page
+# @pytest.fixture
+# def get_page(driver, ClassPage):
+#     page = ClassPage(driver=driver)
+#     page.authorize()
+#     return page
 
 
 @pytest.fixture
