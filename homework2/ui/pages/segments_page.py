@@ -19,7 +19,7 @@ class SegmentsPage(MainPage):
     @allure.step("Добавление группы в список групп")
     def add_group(self, url):
         self.click(self.locators.GROUPS_LIST_BUTTON, timeout=10)
-        self.enter(self.locators.INPUT_LINK, url)
+        self.enter_string(self.locators.INPUT_LINK, url)
         self.click(self.locators.SELECT_ALL_BUTTON)
         self.click(self.locators.ADD_SELECTED_BUTTON)
 
