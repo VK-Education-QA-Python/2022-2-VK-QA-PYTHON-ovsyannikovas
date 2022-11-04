@@ -19,10 +19,10 @@ class BasePage(object):
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
     def click(self, locator, timeout=None):
-        self.find(locator, timeout=timeout)
-        elem = self.wait(timeout).until(EC.element_to_be_clickable(locator))
-        elem.click()
+        element = self.find(locator, timeout)
+        element.click()
 
     def enter_string(self, locator, text):
         element = self.find(locator)
+        element.clear()
         element.send_keys(text)

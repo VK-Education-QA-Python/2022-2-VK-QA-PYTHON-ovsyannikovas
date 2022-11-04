@@ -10,10 +10,8 @@ class MainPage(BasePage):
 
     def authorize(self, email_address="minipersik02@gmail.com", password="testpass"):
         self.click(self.locators.LOGIN_BUTTON_MENU, timeout=15)
-        email = self.find(self.locators.EMAIL_FIELD)
-        email.send_keys(email_address)
-        password_field = self.find(self.locators.PASSWORD_FIELD)
-        password_field.send_keys(password)
+        self.enter_string(self.locators.EMAIL_FIELD, email_address)
+        self.enter_string(self.locators.PASSWORD_FIELD, password)
         self.click(self.locators.LOGIN_BUTTON_FORM)
 
     @allure.step("Переход на страницу кампаний")
@@ -23,4 +21,6 @@ class MainPage(BasePage):
     @allure.step("Переход на страницу аудиторий")
     def go_to_segments_page(self):
         self.click(self.locators.SEGMENTS)
+
+
 
