@@ -32,13 +32,15 @@ def main_page(driver):
 
 @pytest.fixture
 def campaigns_page(driver):
-    page = CampaignsPage(driver=driver)
-    page.authorize()
-    return page
+    # page = CampaignsPage(driver=driver)
+    # page.authorize()
+    # return page
+    return CampaignsPage(driver=driver)
 
 
 @pytest.fixture
 def segments_page(driver):
-    page = SegmentsPage(driver=driver)
-    page.authorize()
-    return page
+    # page = SegmentsPage(driver=driver)
+    # page.authorize()
+    # return page
+    return SegmentsPage(driver=driver)

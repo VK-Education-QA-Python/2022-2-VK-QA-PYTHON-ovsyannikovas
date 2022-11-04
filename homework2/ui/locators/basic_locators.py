@@ -15,9 +15,9 @@ class MainPageLocators(BasePageLocators):
     LOGIN_BUTTON_FORM = (By.CSS_SELECTOR, "[class^='authForm-module-button']")
 
 
-class CampaignsPageLocators(BasePageLocators):
-    CREATE_CAMPAIGN_BUTTON1 = (By.CSS_SELECTOR, "a[href='/campaign/new']")
-    CREATE_CAMPAIGN_BUTTON2 = (By.CSS_SELECTOR, "[class*='createButton'] [data-test='button']")
+class CampaignsPageLocators(MainPageLocators):
+    # CREATE_CAMPAIGN_BUTTON1 = (By.CSS_SELECTOR, "a[href='/campaign/new']")
+    CREATE_CAMPAIGN_BUTTON = (By.CSS_SELECTOR, "[class*='createButton'] [data-test='button']")
     AIM_BUTTON = (By.CSS_SELECTOR, "div[data-class-name='ColumnListItemView']:first-child")
     INPUT_URL = (By.CSS_SELECTOR, "input[data-gtm-id='ad_url_text']")
     BUDGET_SETTING = (By.CSS_SELECTOR, "li[data-scroll-to='setting-budget_setting']")
@@ -46,13 +46,14 @@ class CampaignsPageLocators(BasePageLocators):
     SUCCESS_MESSAGE = (By.CSS_SELECTOR, "[class*='icon-success']")
 
 
-class SegmentsPageLocators(BasePageLocators):
+class SegmentsPageLocators(MainPageLocators):
     SEGMENTS_LIST = (By.CSS_SELECTOR, "a[href='/segments/segments_list']")
     # CREATE_SEGMENT_BUTTON = (By.XPATH, ".//div[contains(@class, 'js-create-button-wrap')]/button")
-    CREATE_SEGMENT_BUTTON = (By.XPATH, "//a[@href='/segments/segments_list/new/'] | //div[contains(@class, 'js-create-button-wrap')]/button")
+    CREATE_SEGMENT_BUTTON = (
+        By.XPATH, "//a[@href='/segments/segments_list/new/'] | //div[contains(@class, 'js-create-button-wrap')]/button")
     CREATE_SEGMENT_BUTTON1 = (By.CSS_SELECTOR, "a[href='/segments/segments_list/new/']")
     CREATE_SEGMENT_BUTTON2 = (By.CSS_SELECTOR, ".js-create-button-wrap button")
-    SEGMENT_TYPE_APPS = (By.XPATH, "//div[.='Приложения и игры в соцсетях']")
+    SEGMENT_TYPE_APPS = (By.CLASS_NAME, "adding-segments-item")
     CHECKBOX = (By.CSS_SELECTOR, "input[class*='adding-segments-source__checkbox']")
     ADD_SEGMENT_BUTTON = (By.CSS_SELECTOR, ".adding-segments-modal__footer button[data-class-name='Submit']")
     INPUT_NAME = (By.CSS_SELECTOR, ".input_create-segment-form input")
@@ -66,7 +67,7 @@ class SegmentsPageLocators(BasePageLocators):
     INPUT_LINK = (By.CSS_SELECTOR, ".segments-groups-ok-list__suggester-wrap input")
     SELECT_ALL_BUTTON = (By.CSS_SELECTOR, "div[data-test='select_all']")
     ADD_SELECTED_BUTTON = (By.CSS_SELECTOR, "div[data-test='add_selected_items_button']")
-    SEGMENT_TYPE_GROUPS = (By.XPATH, "//div[.='Группы ОК и VK']")
+    SEGMENT_TYPE_GROUPS = (By.CSS_SELECTOR, ".adding-segments-item:last-child")
     CREATED_SEGMENT_CHECKBOX = (By.CSS_SELECTOR, "[class*='main-module-CellFirst']:first-child input")
     ACTIONS_BUTTON = (By.CSS_SELECTOR, "div[class*='js-actions-button-wrap']")
     REMOVE_BUTTON = (By.CSS_SELECTOR, "[data-test='remove']")
@@ -74,4 +75,3 @@ class SegmentsPageLocators(BasePageLocators):
     CONFIRM_REMOVE_BUTTON = (By.CSS_SELECTOR, "button[class*='button_confirm-remove']")
     ID_DIV = (By.CSS_SELECTOR, "[class*='main-module-CellFirst']:first-child span")
     FIRST_SEGMENT_NAME = (By.CSS_SELECTOR, "[class*='nameCell']:first-child a")
-

@@ -12,8 +12,7 @@ class CampaignsPage(MainPage):
     @allure.step("Создание кампании")
     def create_campaign(self, file_path):
         url = "https://vk.com/vkedu"
-        # button1 or button2 ?
-        self.click(self.locators.CREATE_CAMPAIGN_BUTTON2, timeout=10)
+        self.click(self.locators.CREATE_CAMPAIGN_BUTTON, timeout=10)
         self.click(self.locators.AIM_BUTTON, timeout=10)
         self.enter_string(self.locators.INPUT_URL, url)
         self.find(self.locators.PRICE_SLIDER, timeout=5)
