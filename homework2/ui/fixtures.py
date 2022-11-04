@@ -23,13 +23,6 @@ def driver(config):
     driver.quit()
 
 
-# @pytest.fixture
-# def get_page(driver, ClassPage):
-#     page = ClassPage(driver=driver)
-#     page.authorize()
-#     return page
-
-
 @pytest.fixture
 def main_page(driver):
     main_page = MainPage(driver=driver)
@@ -39,9 +32,13 @@ def main_page(driver):
 
 @pytest.fixture
 def campaigns_page(driver):
-    return CampaignsPage(driver=driver)
+    page = CampaignsPage(driver=driver)
+    page.authorize()
+    return page
 
 
 @pytest.fixture
 def segments_page(driver):
-    return SegmentsPage(driver=driver)
+    page = SegmentsPage(driver=driver)
+    page.authorize()
+    return page
