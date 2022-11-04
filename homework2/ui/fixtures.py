@@ -1,7 +1,6 @@
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from ui.pages.base_page import BasePage
 from ui.pages.main_page import MainPage
 from ui.pages.campaigns_page import CampaignsPage
 from ui.pages.segments_page import SegmentsPage
@@ -31,16 +30,20 @@ def main_page(driver):
 
 
 @pytest.fixture
-def campaigns_page(driver):
-    # page = CampaignsPage(driver=driver)
-    # page.authorize()
-    # return page
+def campaigns_page(driver, main_page):
+    main_page.go_to_campaigns_page()
     return CampaignsPage(driver=driver)
 
 
 @pytest.fixture
-def segments_page(driver):
-    # page = SegmentsPage(driver=driver)
-    # page.authorize()
-    # return page
+def segments_page(driver, main_page):
+    main_page.go_to_segments_page()
     return SegmentsPage(driver=driver)
+
+
+@pytest.fixture(scope='function')
+def group(main_page, segments_page):
+    main_page.go_to_segments_page()
+    segments_page.add_group(url="https://vk.com/vkedu")
+    yield
+    segments_page.delete_group()
