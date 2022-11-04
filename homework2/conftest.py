@@ -36,8 +36,8 @@ def base_temp_dir():
 
 @pytest.fixture(scope='function')
 def temp_dir(base_temp_dir, request):
-    test_dir = '\\'.join((base_temp_dir, request._pyfuncitem.nodeid.replace('::', '\\')))
-    # test_dir = os.path.join(base_temp_dir, request._pyfuncitem.nodeid)
+    # test_dir = '\\'.join((base_temp_dir, request._pyfuncitem.nodeid.replace('::', '\\')))
+    test_dir = os.path.join(base_temp_dir, request._pyfuncitem.nodeid)
     os.makedirs(test_dir)
     return test_dir
 

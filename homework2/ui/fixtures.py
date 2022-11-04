@@ -14,7 +14,7 @@ def driver(config):
     chrome_options = webdriver.ChromeOptions()
     if headless:
         chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager(version=version).install(),
                               options=chrome_options)
     driver.get(url)
     driver.maximize_window()
