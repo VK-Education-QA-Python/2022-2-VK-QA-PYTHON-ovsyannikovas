@@ -1,4 +1,5 @@
 import allure
+import pytest
 
 from ui.locators import basic_locators
 from ui.pages.main_page import MainPage

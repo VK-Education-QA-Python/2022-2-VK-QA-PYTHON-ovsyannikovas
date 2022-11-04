@@ -20,11 +20,11 @@ class CampaignsPage(MainPage):
         self.click(self.locators.FORMAT_ITEM, timeout=5)
         for i in range(3):
             self.click(self.locators.slide(i))
-            self.enter_string(self.locators.UPLOAD_IMG600_BUTTON, file_path)
+            self.enter_string(self.locators.UPLOAD_IMG600_BUTTON, file_path, photo=True)
             self.click(self.locators.SAVE_IMG_BUTTON)
             self.enter_string(self.locators.slide_link(i), url)
             self.enter_string(self.locators.slide_title(i), f"Заголовок {i + 1}")
-        self.enter_string(self.locators.UPLOAD_IMG256_BUTTON, file_path)
+        self.enter_string(self.locators.UPLOAD_IMG256_BUTTON, file_path, photo=True)
         self.click(self.locators.SAVE_IMG_BUTTON)
         self.enter_string(self.locators.TITLE_FIELD, "Заголовок")
         self.enter_string(self.locators.TEXT_FIELD, "Текст объявления")

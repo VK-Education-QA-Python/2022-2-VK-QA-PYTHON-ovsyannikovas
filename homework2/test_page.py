@@ -18,24 +18,20 @@ class TestCreations(BaseCase):
     def test_segment_creation(self, type_locator=None):
         self.main_page.go_to_segments_page()
         allure.step("Взятие id последнего сегмента")
-        old_segment_id = self.segments_page.find(self.segments_page.locators.ID_DIV, timeout=15).text
+        segment_id = self.segments_page.find(self.segments_page.locators.ID_DIV, timeout=15).text
         type_locator = self.segments_page.locators.SEGMENT_TYPE_APPS if type_locator is None else type_locator
         self.segments_page.create_segment(type_locator)
-        allure.step("Проверка несовпадения id последнего сегмента со старым id")
-        assert self.segments_page.find(self.segments_page.locators.ID_DIV).text != old_segment_id
+        allure.step("Проверка присутствия id созданного сегмента")
+        assert self.segments_page.find(self.segments_page.locators.find_segment(segment_id)) is not None
 
     @pytest.mark.UI
     @allure.step("Проверка успешного создания и последующего удаления аудиторного сегмента с типом 'Группы OK и VK'")
-    def test_segment_deletion(self):
+    def test_segment_deletion(self, group):
         self.main_page.go_to_segments_page()
-        self.segments_page.add_group(url="https://vk.com/vkedu")
-        self.test_segment_creation(type_locator=self.segments_page.locators.SEGMENT_TYPE_GROUPS)
         allure.step("Создание сегмента с проверкой")
-        segment_id = self.segments_page.find(self.segments_page.locators.ID_DIV).text
+        self.test_segment_creation(type_locator=self.segments_page.locators.SEGMENT_TYPE_GROUPS)
+        segment_id = self.segments_page.find(self.segments_page.locators.ID_DIV, timeout=15).text
         self.segments_page.delete_segment()
         self.segments_page.find(self.segments_page.locators.SUCCESS_MESSAGE)
         allure.step("Проверка отсутствия наличия id созданного сегмента в списке сегментов")
-        assert self.segments_page.find(self.segments_page.locators.ID_DIV).text != segment_id
-        self.segments_page.delete_group()
-
-
+        assert self.segments_page.find(self.segments_page.locators.find_segment(segment_id)) is None

@@ -75,3 +75,7 @@ class SegmentsPageLocators(MainPageLocators):
     CONFIRM_REMOVE_BUTTON = (By.CSS_SELECTOR, "button[class*='button_confirm-remove']")
     ID_DIV = (By.CSS_SELECTOR, "[class*='main-module-CellFirst']:first-child span")
     FIRST_SEGMENT_NAME = (By.CSS_SELECTOR, "[class*='nameCell']:first-child a")
+
+    @staticmethod
+    def find_segment(segment_id):
+        return By.CSS_SELECTOR, f"[data-test *=id-{segment_id}]"

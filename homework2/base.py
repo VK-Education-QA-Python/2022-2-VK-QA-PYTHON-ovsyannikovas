@@ -16,9 +16,17 @@ class BaseCase:
         self.driver = driver
         self.config = config
 
-        self.main_page:MainPage = (request.getfixturevalue('main_page'))
+        self.main_page: MainPage = (request.getfixturevalue('main_page'))
         self.campaigns_page: CampaignsPage = (request.getfixturevalue('campaigns_page'))
         self.segments_page: SegmentsPage = (request.getfixturevalue('segments_page'))
 
         # page = self.__new__(self.__class__)
         # page.authorize()
+
+    @pytest.fixture(scope='function')
+    def group(self):
+        self.main_page.go_to_segments_page()
+        self.segments_page.add_group(url="https://vk.com/vkedu")
+        yield
+        self.segments_page.delete_group()
+
