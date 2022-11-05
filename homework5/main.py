@@ -4,10 +4,6 @@ import pandas as pd
 import sys
 
 
-def pytest_addoption(parser):
-    parser.addoption("--json", action="store_true")
-
-
 def readfile(filename):
     with open(filename) as f:
         file = f.readlines()
