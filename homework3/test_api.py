@@ -6,8 +6,8 @@ from base import ApiBase
 class TestLkApi(ApiBase):
     @pytest.mark.API
     def test_api_login(self):
-        assert self.api_client.session.get('https://target-sandbox.my.com/dashboard/').url == \
-               'https://target-sandbox.my.com/dashboard/'
+        status_code = self.api_client.session.get('https://target-sandbox.my.com/dashboard/').status_code
+        assert status_code == 200
 
     @pytest.mark.API
     def test_api_campaign_creation(self):

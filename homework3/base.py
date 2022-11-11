@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 
@@ -11,7 +13,7 @@ class ApiBase:
         if self.authorize:
             self.api_client.post_login()
 
-    def create_campaign(self, title='Новая кампания test'):
+    def create_campaign(self, title=f'Новая кампания {str(datetime.datetime.now())}'):
         return self.api_client.create_campaign(title=title)
 
     def campaign_in_campaigns(self, campaign_id):
@@ -20,7 +22,8 @@ class ApiBase:
     def delete_campaign(self, campaign_id):
         self.api_client.delete_campaign(campaign_id)
 
-    def create_segment(self, title='Новый аудиторный сегмент test', segment_type='remarketing_player'):
+    def create_segment(self, title=f'Новый аудиторный сегмент {str(datetime.datetime.now())}',
+                       segment_type='remarketing_player'):
         return self.api_client.create_segment(title=title, segment_type=segment_type)
 
     def segment_in_segments(self, segment_id):

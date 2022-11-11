@@ -49,7 +49,7 @@ class ApiClient:
             'X-CSRFToken': f"{self.session.cookies['csrftoken']}",
         }
 
-    def create_segment(self, title='Новый аудиторный сегмент test', segment_type='remarketing_player'):
+    def create_segment(self, title, segment_type='remarketing_player'):
         data = {
             'name': title,
             'pass_condition': 1,
@@ -84,8 +84,10 @@ class ApiClient:
         return self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False).json()
 
     def segment_in_segments(self, segment_id):
+        print(segment_id)
         url = urljoin(self.base_url, 'api/v2/remarketing/segments.json')
-        segments_list = dict(self.session.get(url=url, headers=self.get_post_headers()).json())
+        segments_list = self.session.get(url=url, headers=self.get_post_headers()).json()
+        print(segments_list)
         segments = segments_list['items']
 
         for segment in segments:
@@ -93,7 +95,7 @@ class ApiClient:
                 return True
         return False
 
-    def create_campaign(self, title='Новая кампания test'):
+    def create_campaign(self, title):
         path_256 = os.path.join(self.repo_toot, 'files/256.png')
         path_600 = os.path.join(self.repo_toot, 'files/600.jpg')
 
