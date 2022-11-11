@@ -16,7 +16,9 @@ class ApiClient:
     def post_login(self):
         data = {
             'email': self.login,
-            'password': self.password
+            'password': self.password,
+            "continue": "https://target-sandbox.my.com/auth/mycom?state=target_login%3D1%26ignore_opener%3D1#email",
+            "failure": "https://account.my.com/login/"
         }
         headers = {
             'Referer': 'https://account.my.com/',
@@ -24,15 +26,6 @@ class ApiClient:
         # getting mc and ssdc cookies
         self.session.post(url='https://auth-ac.my.com/auth', allow_redirects=False,
                           headers=headers, data=data)
-
-        # getting token for next url
-        token = self.session.get(
-            url='https://auth-ac.my.com/sdc',
-            allow_redirects=False,
-            headers=headers).headers['Location'].split('=')[-1]
-
-        # getting sdcs cookie
-        self.session.get(url=f'https://account.my.com/sdc?token={token}')
 
         # getting sdc and csrftoken cookies
         self.session.get(url=f'https://target-sandbox.my.com/csrf/')
@@ -44,9 +37,9 @@ class ApiClient:
 
     def get_post_headers(self):
         return {
-            'Cookie': f"csrftoken={self.session.cookies['csrftoken']}; mc={self.session.cookies['mc']}; "
-                      f"sdc={self.session.cookies['sdc']};",
-            'X-CSRFToken': f"{self.session.cookies['csrftoken']}",
+            'Cookie': f"csrftoken={self.session.cookies.get('csrftoken')}; mc={self.session.cookies.get('mc')}; "
+                      f"sdc={self.session.cookies.get('sdc')};",
+            'X-CSRFToken': f"{self.session.cookies.get('csrftoken')}",
         }
 
     def create_segment(self, title, segment_type='remarketing_player'):
