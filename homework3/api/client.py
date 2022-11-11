@@ -88,22 +88,22 @@ class ApiClient:
                 return True
         return False
 
+    def get_img_id(self, path):
+        files = {'file': (path, open(path, 'rb'), 'multipart/form-data')}
+        url = urljoin(self.base_url, 'api/v2/content/static.json')
+        response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
+                                     allow_redirects=False).json()
+        return response['id']
+
     def create_campaign(self, title):
         path_256 = os.path.join(self.repo_toot, 'files/256.png')
         path_600 = os.path.join(self.repo_toot, 'files/600.jpg')
 
         # loading 256x256 picture
-        files = {'file': (path_256, open(path_256, 'rb'), 'multipart/form-data')}
-        url = urljoin(self.base_url, 'api/v2/content/static.json')
-        response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
-                                     allow_redirects=False).json()
-        img_id_256 = response['id']
+        img_id_256 = self.get_img_id(path_256)
 
         # loading 600x600 picture
-        files = {'file': (path_600, open(path_600, 'rb'), 'multipart/form-data')}
-        response = self.session.post(url=url, files=files, headers=self.get_post_headers(),
-                                     allow_redirects=False).json()
-        img_id_600 = response['id']
+        img_id_600 = self.get_img_id(path_600)
 
         # loading url
         url = urljoin(self.base_url, 'api/v1/urls/?url=vk.com')
