@@ -191,11 +191,6 @@ class ApiClient:
         self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False)
 
     def campaign_in_campaigns(self, campaign_id):
-        url = urljoin(self.base_url, 'api/v2/banners/delivery.json')
-        campaings_list = self.session.get(url=url, headers=self.get_post_headers()).json()
-        campaigns = campaings_list['pending']
-
-        for campaign in campaigns:
-            if campaign['campaign_id'] == campaign_id:
-                return True
-        return False
+        url = urljoin(self.base_url, f'api/v2/campaigns/{campaign_id}.json?fields=id,name,status')
+        status = self.session.get(url=url, headers=self.get_post_headers()).json()['status']
+        return status == 'active'
