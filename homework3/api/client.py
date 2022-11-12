@@ -77,11 +77,9 @@ class ApiClient:
         return self.session.post(url=url, json=data, headers=self.get_post_headers(), allow_redirects=False).json()
 
     def segment_in_segments(self, segment_id):
-        url = urljoin(self.base_url, 'api/v2/remarketing/segments.json')
-        segments_list = self.session.get(url=url, headers=self.get_post_headers()).json()
-        segments = tuple(map(lambda x: x['id'], segments_list['items']))
-
-        return segment_id in segments
+        url = urljoin(self.base_url, f'api/v2/remarketing/segments/{segment_id}.json')
+        response = self.session.get(url=url, headers=self.get_post_headers()).json()
+        return response.get('id') == segment_id
 
     def get_img_id(self, path):
         files = {'file': (path, open(path, 'rb'), 'multipart/form-data')}
