@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from mysql.client import MysqlClient
 
@@ -26,3 +28,13 @@ def mysql_client(request) -> MysqlClient:
     client = request.config.mysql_client
     yield client
     client.connection.close()
+
+
+@pytest.fixture(scope='session')
+def repo_root():
+    return os.path.abspath(os.path.join(__file__, os.path.pardir))
+
+
+@pytest.fixture(scope='session')
+def file_path(repo_root, filename='access.log'):
+    return os.path.join(repo_root, 'scripts', filename)

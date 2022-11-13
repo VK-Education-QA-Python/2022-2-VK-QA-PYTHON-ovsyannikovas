@@ -3,9 +3,10 @@ from scripts.script import get_data
 
 
 class MysqlBuilder:
-    def __init__(self, client):
+
+    def __init__(self, client, file_path):
         self.client = client
-        self.data = get_data()
+        self.data = get_data(file_path)
 
     def fill_tables(self):
         self.fill_task1()
