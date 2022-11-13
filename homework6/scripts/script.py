@@ -1,4 +1,5 @@
 import json
+import os
 
 import pandas as pd
 import sys
@@ -19,6 +20,11 @@ def create_df(file):
     df = df.drop([1, 2, 3, 4, 7, *range(10, 43)], axis=1)
     df.columns = ['ip', 'method', 'url', 'status', 'requests_amount']
     df['method'] = df['method'].str[1:]
+    ind_missing = df[df['requests_amount'].str.contains('-')].index
+    df = df.drop(ind_missing, axis=0)
+    ind_missing = df[df['method'].str.len() > 20].index
+    df = df.drop(ind_missing, axis=0)
+    df['requests_amount'] = df['requests_amount'].astype(int)
     return df
 
 
@@ -40,9 +46,10 @@ def get_res(df):
         res[2][method] = num
     for url, num in task3_df.items():
         res[3][url] = num
-    # print(task4_df)
-    # for url, num in task4_df.items():
-    #     res[3][url] = num
+    for column in task4_df:
+        res[4][column] = []
+        for row in task4_df[column]:
+            res[4][column].append(row)
     for ip, num in task5_df.items():
         res[5][ip] = num
 
@@ -75,7 +82,7 @@ def write_results(filename, task2_df, task3_df, task5_df, jsonify=False):
 
 
 def get_task2_df(df):
-    return df['method'][df['method'].str.len() < 255].value_counts()
+    return df['method'].value_counts()
 
 
 def get_task3_df(df, length):
@@ -83,14 +90,15 @@ def get_task3_df(df, length):
 
 
 def get_task4_df(df, length):
-    return df[df['status'].str.contains('4..')].sort_values(by=['requests_amount'], ascending=False).head(length)
+    return df[df['status'].str.contains('4..')].sort_values(by='requests_amount', ascending=False).head(5)
 
 
 def get_task5_df(df, length):
     return df[df['status'].str.contains('5..')]['ip'].sort_values().value_counts().head(length)
 
 
-def get_data(filename='C:\\Users\\LenovoIdeaPad\\PycharmProjects\\2022-2-VK-QA-PYTHON-ovsyannikovas\\homework6\scripts\\access.log'):
+def get_data(
+        filename='C:\\Users\\LenovoIdeaPad\\PycharmProjects\\2022-2-VK-QA-PYTHON-ovsyannikovas\\homework6\scripts\\access.log'):
     file = readfile(filename)
     df = create_df(file)
 

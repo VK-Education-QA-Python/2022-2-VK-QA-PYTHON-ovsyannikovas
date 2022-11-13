@@ -11,7 +11,7 @@ tables = (
 
 
 def pytest_configure(config):
-    mysql_client = MysqlClient(user='root', password='0000', db_name='mysql_db')
+    mysql_client = MysqlClient()
     if not hasattr(config, 'workerinput'):
         mysql_client.create_db()
     mysql_client.connect(db_created=True)

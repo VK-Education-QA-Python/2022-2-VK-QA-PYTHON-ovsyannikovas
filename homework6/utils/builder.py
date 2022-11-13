@@ -11,7 +11,7 @@ class MysqlBuilder:
         self.fill_task1()
         self.fill_task2()
         self.fill_task3()
-        # self.fill_task4()
+        self.fill_task4()
         self.fill_task5()
         self.client.session.commit()
 
@@ -26,9 +26,16 @@ class MysqlBuilder:
         for url, num in self.data[3].items():
             self.client.session.add(Task3(url=url, amount=num))
 
-    # def fill_task4(self):
-    #     for url, num in self.data[4].items():
-    #         self.client.session.add(Task4(url=url, amount=num))
+    def fill_task4(self):
+        data = self.data[4]
+        head_num = len(data['ip'])
+        for i in range(head_num):
+            self.client.session.add(Task4(
+                ip=data['ip'][i],
+                url=data['url'][i],
+                status=data['status'][i],
+                amount=data['requests_amount'][i],
+            ))
 
     def fill_task5(self):
         for ip, num in self.data[5].items():

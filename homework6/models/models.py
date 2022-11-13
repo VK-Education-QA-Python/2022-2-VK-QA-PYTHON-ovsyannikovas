@@ -35,7 +35,7 @@ class Task3(TaskBase):
 class Task4(TaskBase):
     __tablename__ = 'Task4'
 
-    url = Column(CHAR(50), nullable=False)
+    url = Column(CHAR(255), nullable=False)
     status = Column(Integer, nullable=False)
     ip = Column(CHAR(50), nullable=False)
 
