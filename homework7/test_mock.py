@@ -1,21 +1,16 @@
 import requests
 
 import settings
-from mock.flask_mock import SURNAME_DATA
+from mock.flask_mock import app_data
 
-url = f'http://{settings.APP_HOST}:{settings.APP_PORT}'
-
-
-def test():
-    print(requests.get(url).text)
+url = f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}'
 
 
 def test_add_get_user():
     resp = requests.post(f'{url}/add_user', json={'name': 'Kostya'})
-    user_id_from_add = resp.json()['user_id']
-
-    resp = requests.get(f'{url}/get_user/Kostya')
-    user_id_from_get = resp.json()['user_id']
+    user_id_from_add = resp.json()['id']
+    resp = requests.get(f'{url}/get_user/{user_id_from_add}')
+    user_id_from_get = resp.json()['id']
 
     assert user_id_from_add == user_id_from_get
 
@@ -42,13 +37,13 @@ def test_with_age():
     assert 18 <= age <= 105
 
 
-def test_has_surname():
-    requests.post(f'{url}/add_user', json={'name': 'Olya'})
-    SURNAME_DATA['Olya'] = 'OLOLOEVA'
-
-    resp = requests.get(f'{url}/get_user/Olya')
-    surname = resp.json()['surname']
-    assert surname == 'OLOLOEVA'
+# def test_has_surname():
+#     requests.post(f'{url}/add_user', json={'name': 'Olya'})
+#     SURNAME_DATA['Olya'] = 'OLOLOEVA'
+#
+#     resp = requests.get(f'{url}/get_user/Olya')
+#     surname = resp.json()['surname']
+#     assert surname == 'OLOLOEVA'
 
 
 def test_has_no_surname():
