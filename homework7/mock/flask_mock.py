@@ -25,7 +25,7 @@ def create_user():
         app_data[user_id_seq] = user_name
         return jsonify({'id': user_id_seq}), 201
     else:
-        return jsonify(f'User_name {user_name} already exists: id:'), 400
+        return jsonify(f'User_name {user_name} already exists'), 400
 
 
 @app.route('/get_user/<user_id>', methods=['GET'])

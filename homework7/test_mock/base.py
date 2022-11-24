@@ -11,37 +11,43 @@ class TestBase:
     @pytest.fixture(scope='function', autouse=True)
     def setup(self, logger):
         self.url = f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}'
-        # self.logger = logger
+        self.logger = logger
 
     def add_user(self, username):
-        response = requests.post(f'{self.url}/add_user', json={'name': username})
-        # self.logger.info(json.dumps(self.create_log(response=resp, method='POST')))
+        body = {'name': username}
+        response = requests.post(f'{self.url}/add_user', json=body)
+        self.logger.info(json.dumps(self.create_log(response=response, method='POST', body=body)))
         return response
 
     def get_user(self, user_id):
         response = requests.get(f'{self.url}/get_user/{user_id}')
-        # self.logger.info(json.dumps(self.create_log(response=resp, method='GET')))
+        self.logger.info(json.dumps(self.create_log(response=response, method='GET')))
         return response
 
     def get_users(self):
         response = requests.get(f'{self.url}/')
-        # self.logger.info(json.dumps(self.create_log(response=resp, method='GET')))
+        self.logger.info(json.dumps(self.create_log(response=response, method='GET')))
         return response
 
     def edit_user(self, user_id, username):
-        response = requests.put(f'{self.url}/edit_user/{user_id}', json={'name': username})
-        # self.logger.info(json.dumps(self.create_log(response=resp, method='PUT')))
+        body = {'name': username}
+        response = requests.put(f'{self.url}/edit_user/{user_id}', json=body)
+        self.logger.info(json.dumps(self.create_log(response=response, method='PUT', body=body)))
         return response
 
     def delete_user(self, user_id):
-        resp = requests.delete(f'{self.url}/delete_user/{user_id}')
-        # self.logger.info(json.dumps(self.create_log(response=resp, method='DELETE')))
-        return resp
+        response = requests.delete(f'{self.url}/delete_user/{user_id}')
+        self.logger.info(json.dumps(self.create_log(response=response, method='DELETE')))
+        return response
 
-    def create_log(self, response, method):
+    @staticmethod
+    def create_log(response, method, body=None):
+        if body is None:
+            body = {}
         data = {
             'Status code': response.status_code,
             'Method': method,
-            # 'Body': response.body
+            'JSON Response': response.json(),
+            'Body': body
         }
         return data

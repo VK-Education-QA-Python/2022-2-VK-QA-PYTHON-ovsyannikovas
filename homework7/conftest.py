@@ -1,14 +1,11 @@
 import logging
 import os
-import shutil
-import sys
 import time
 
 import pytest
 import requests
 
 import settings
-from mock.flask_mock import app_data
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -51,12 +48,12 @@ def pytest_unconfigure(config):
     requests.get(f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}/shutdown')
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def repo_root():
     return os.path.abspath(os.path.join(__file__, os.path.pardir))
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def temp_dir(request, repo_root):
     test_dir = os.path.join(os.path.join(repo_root, 'logs'), request._pyfuncitem.nodeid)
     if not os.path.exists(test_dir):
@@ -64,9 +61,9 @@ def temp_dir(request, repo_root):
     return test_dir
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def logger(temp_dir):
-    log_formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')
+    log_formatter = logging.Formatter('%(asctime)s - %(message)s')
     log_file = os.path.join(temp_dir, 'test.log')
     log_level = logging.INFO
 
