@@ -42,3 +42,17 @@ def test_delete_non_existent_user(add_user_id):
     resp = requests.delete(f'{url}/delete_user/12345')
 
     assert resp.status_code == 404
+
+
+def test_edit_existent_user(add_user_id):
+    new_name = 'Sveta'
+    resp = requests.put(f'{url}/edit_user/{add_user_id}', json={'name': new_name})
+
+    assert resp.json()['name'] == new_name
+
+
+def test_edit_non_existent_user(add_user_id):
+    new_name = 'Sveta'
+    resp = requests.put(f'{url}/edit_user/12345', json={'name': new_name})
+
+    assert resp.status_code == 404

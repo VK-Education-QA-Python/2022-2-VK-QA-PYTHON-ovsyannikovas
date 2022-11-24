@@ -5,6 +5,7 @@ import pytest
 import requests
 
 import settings
+from mock.flask_mock import app_data
 
 repo_root = os.path.abspath(os.path.join(__file__, os.pardir))
 

@@ -41,10 +41,11 @@ def get_user(user_id):
 
 @app.route('/edit_user/<user_id>', methods=['PUT'])
 def edit_user(user_id):
-    if app_data.get(user_id):
-        app_data[user_id] = json.loads(request.data)['name']
-        data = {'id': user_id,
-                'name': app_data[user_id]}
+    user_id_int = int(user_id)
+    if app_data.get(user_id_int):
+        app_data[user_id_int] = json.loads(request.data)['name']
+        data = {'id': user_id_int,
+                'name': app_data[user_id_int]}
         return jsonify(data), 200
     else:
         return jsonify(f'User with id {user_id} not found'), 404
