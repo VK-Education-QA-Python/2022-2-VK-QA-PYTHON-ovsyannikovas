@@ -52,9 +52,10 @@ def edit_user(user_id):
 
 @app.route('/delete_user/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    if app_data.get(user_id):
-        app_data.pop(user_id)
-        return jsonify(user_id), 200
+    user_id_int = int(user_id)
+    if app_data.get(user_id_int):
+        app_data.pop(user_id_int)
+        return jsonify({'id': user_id_int}), 200
     else:
         return jsonify(f'User with id {user_id} not found'), 404
 
