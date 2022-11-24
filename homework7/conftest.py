@@ -1,4 +1,7 @@
+import logging
 import os
+import shutil
+import sys
 import time
 
 import pytest
@@ -7,19 +10,15 @@ import requests
 import settings
 from mock.flask_mock import app_data
 
-repo_root = os.path.abspath(os.path.join(__file__, os.pardir))
 
-
-# @pytest.fixture(scope='session')
-# def repo_root():
-#     return os.path.abspath(os.path.join(__file__, os.path.pardir))
-
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='function', autouse=True)
 def add_user_id():
     url = f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}'
     resp = requests.post(f'{url}/add_user', json={'name': 'Kostya'})
     user_id = resp.json()['id']
+
     yield user_id
+
     try:
         requests.delete(f'{url}/delete_user/{user_id}')
     except:
@@ -41,18 +40,6 @@ def wait_ready(host, port):
         raise RuntimeError('App did not started in 5s!')
 
 
-# @pytest.fixture(scope='session')
-# def configure(config):
-#     if not hasattr(config, 'workerinput'):
-#         from mock import flask_mock
-#         flask_mock.run_mock()
-#         wait_ready(settings.MOCK_HOST, settings.MOCK_PORT)
-#
-#         yield
-#
-#         requests.get(f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}/shutdown')
-
-
 def pytest_configure(config):
     if not hasattr(config, 'workerinput'):
         from mock import flask_mock
@@ -62,3 +49,38 @@ def pytest_configure(config):
 
 def pytest_unconfigure(config):
     requests.get(f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}/shutdown')
+
+
+@pytest.fixture(scope='function')
+def repo_root():
+    return os.path.abspath(os.path.join(__file__, os.path.pardir))
+
+
+@pytest.fixture(scope='function')
+def temp_dir(request, repo_root):
+    test_dir = os.path.join(os.path.join(repo_root, 'logs'), request._pyfuncitem.nodeid)
+    if not os.path.exists(test_dir):
+        os.makedirs(test_dir)
+    return test_dir
+
+
+@pytest.fixture(scope='function')
+def logger(temp_dir):
+    log_formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')
+    log_file = os.path.join(temp_dir, 'test.log')
+    log_level = logging.INFO
+
+    file_handler = logging.FileHandler(log_file, 'w')
+    file_handler.setFormatter(log_formatter)
+    file_handler.setLevel(log_level)
+
+    log = logging.getLogger('test')
+    log.propagate = False
+    log.setLevel(log_level)
+    log.handlers.clear()
+    log.addHandler(file_handler)
+
+    yield log
+
+    for handler in log.handlers:
+        handler.close()
