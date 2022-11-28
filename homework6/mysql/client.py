@@ -29,10 +29,9 @@ class MysqlClient:
         self.execute_query(f'DROP database IF EXISTS {self.db_name}')
         self.execute_query(f'CREATE database {self.db_name}')
 
-    def create_tables(self, table_names):
-        for table in table_names:
-            if not sqlalchemy.inspect(self.engine).has_table(table):
-                Base.metadata.tables[table].create(self.engine)
+    def create_table(self, table):
+        if not sqlalchemy.inspect(self.engine).has_table(table):
+            Base.metadata.tables[table].create(self.engine)
 
     def execute_query(self, query, fetch=False):
         res = self.connection.execute(query)

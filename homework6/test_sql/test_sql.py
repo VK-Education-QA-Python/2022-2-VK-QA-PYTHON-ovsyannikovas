@@ -1,21 +1,25 @@
-import pytest
-
 from models.models import *
-from base import MyTest
+from base import BaseTest
+from scripts.script import get_task1_dict, get_task2_dict, get_task3_dict, get_task4_dict, get_task5_dict
 
 
-class TestMysql(MyTest):
+class TestMysql(BaseTest):
     def test_table_len_task1(self):
-        assert self.get_model_len(Task1) == len(self.builder.data[1])
+        self.prepare_table1()
+        assert self.get_model_len(Task1) == len(get_task1_dict(self.path))
 
     def test_table_len_task2(self):
-        assert self.get_model_len(Task2) == len(self.builder.data[2])
+        self.prepare_table2()
+        assert self.get_model_len(Task2) == len(get_task2_dict(self.path))
 
     def test_table_len_task3(self):
-        assert self.get_model_len(Task3) == len(self.builder.data[3])
+        self.prepare_table3()
+        assert self.get_model_len(Task3) == len(get_task3_dict(self.path))
 
     def test_table_len_task4(self):
-        assert self.get_model_len(Task4) == len(self.builder.data[4])
+        self.prepare_table4()
+        assert self.get_model_len(Task4) == len(get_task4_dict(self.path))
 
     def test_table_len_task5(self):
-        assert self.get_model_len(Task5) == len(self.builder.data[5])
+        self.prepare_table5()
+        assert self.get_model_len(Task5) == len(get_task5_dict(self.path))

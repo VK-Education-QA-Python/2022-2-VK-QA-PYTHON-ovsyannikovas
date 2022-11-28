@@ -1,7 +1,4 @@
-import json
-
 import pandas as pd
-import sys
 
 
 def readfile(filename):
@@ -27,49 +24,6 @@ def create_df(file):
     return df
 
 
-def get_res(df):
-    task2_df = get_task2_df(df)
-    task3_df = get_task3_df(df, 10)
-    task4_df = get_task4_df(df, 5)
-    task5_df = get_task5_df(df, 5)
-
-    res = {
-        1: {'amount': len(df)},
-        2: {},
-        3: {},
-        4: {},
-        5: {}
-    }
-
-    for method, num in task2_df.items():
-        res[2][method] = num
-    for url, num in task3_df.items():
-        res[3][url] = num
-    for column in task4_df:
-        res[4][column] = []
-        for row in task4_df[column]:
-            res[4][column].append(row)
-    for ip, num in task5_df.items():
-        res[5][ip] = num
-
-    return res
-
-
-def write_results(filename, df, jsonify=False):
-    if not jsonify:
-        with open(''.join((filename, '.txt')), 'w') as file:
-            file.writelines(f"2. Общее количество запросов по типу, например: GET - 20, POST - 10 и т.д.\n"
-                            f"{str(get_task2_df(df))}"
-                            f"\n\n3. Топ 10 самых частых запросов\n"
-                            f"{str(get_task3_df(df, 10))}"
-                            f"\n\n5. Топ 5 пользователей по количеству запросов, которые завершились серверной (5ХХ) ошибкой\n"
-                            f"{str(get_task5_df(df, 5))}")
-    else:
-        res = get_res(df)
-        with open(''.join((filename, '.json')), "w", encoding="utf-8") as file:
-            json.dump(res, file)
-
-
 def get_task2_df(df):
     return df['method'].value_counts()
 
@@ -86,23 +40,54 @@ def get_task5_df(df, length):
     return df[df['status'].str.contains('5..')]['ip'].sort_values().value_counts().head(length)
 
 
-def get_data(filepath):
+def get_task1_dict(filepath):
     file = readfile(filepath)
     df = create_df(file)
 
-    return get_res(df)
+    return {'amount': len(df)}
 
 
-def main():
-    jsonify = '--json' in sys.argv
-    filename_logs = 'access.log'
-    filename_res = 'results'
-
-    file = readfile(filename_logs)
+def get_task2_dict(filepath):
+    file = readfile(filepath)
     df = create_df(file)
+    task2_df = get_task2_df(df)
+    res = {}
+    for method, num in task2_df.items():
+        res[method] = num
 
-    write_results(filename_res, df, jsonify)
+    return res
 
 
-if __name__ == '__main__':
-    main()
+def get_task3_dict(filepath):
+    file = readfile(filepath)
+    df = create_df(file)
+    task3_df = get_task3_df(df, 10)
+    res = {}
+    for url, num in task3_df.items():
+        res[url] = num
+
+    return res
+
+
+def get_task4_dict(filepath):
+    file = readfile(filepath)
+    df = create_df(file)
+    task4_df = get_task4_df(df, 5)
+    res = {}
+    for column in task4_df:
+        res[column] = []
+        for row in task4_df[column]:
+            res[column].append(row)
+
+    return res
+
+
+def get_task5_dict(filepath):
+    file = readfile(filepath)
+    df = create_df(file)
+    task5_df = get_task5_df(df, 5)
+    res = {}
+    for ip, num in task5_df.items():
+        res[ip] = num
+
+    return res
