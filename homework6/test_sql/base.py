@@ -13,6 +13,9 @@ class BaseTest:
     def get_model_len(self, model):
         return len(self.client.session.query(model).all())
 
+    def get_model_first_row(self, model):
+        return self.client.session.query(model).get(1)
+
     def create_table(self, table_model):
         self.client.create_table(table_model)
 
