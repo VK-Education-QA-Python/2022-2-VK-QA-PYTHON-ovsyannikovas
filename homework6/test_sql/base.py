@@ -19,11 +19,13 @@ class BaseTest:
     def create_table(self, table_model):
         self.client.create_table(table_model)
 
+    @pytest.fixture()
     def prepare_table1(self):
         self.create_table('Task1')
         self.client.session.add(Task1(amount=get_task1_dict(self.path)['amount']))
         self.client.session.commit()
 
+    @pytest.fixture()
     def prepare_table2(self):
         self.create_table('Task2')
         data = get_task2_dict(self.path)
@@ -31,6 +33,7 @@ class BaseTest:
             self.client.session.add(Task2(method=method, amount=num))
         self.client.session.commit()
 
+    @pytest.fixture()
     def prepare_table3(self):
         self.create_table('Task3')
         data = get_task3_dict(self.path)
@@ -38,6 +41,7 @@ class BaseTest:
             self.client.session.add(Task3(url=url, amount=num))
         self.client.session.commit()
 
+    @pytest.fixture()
     def prepare_table4(self):
         self.create_table('Task4')
         data = get_task4_dict(self.path)
@@ -51,6 +55,7 @@ class BaseTest:
             ))
         self.client.session.commit()
 
+    @pytest.fixture()
     def prepare_table5(self):
         self.create_table('Task5')
         data = get_task5_dict(self.path)
