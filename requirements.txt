@@ -10,3 +10,5 @@ selenium==4.5.0
 SQLAlchemy==1.4.43
 urllib3==1.26.12
 webdriver-manager==3.8.3
+Werkzeug==2.1.1
+Flask==2.1.0
