@@ -20,6 +20,7 @@ class RegisterPageLocators:
     ACCEPT_CHECKBOX = (By.ID, 'term')
     REGISTER_BUTTON = (By.ID, 'submit')
     LOGIN_BUTTON = (By.CSS_SELECTOR, "[href='/login']")
+    REGISTER_ERROR_MESSAGE = (By.ID, 'flash')
 
 
 class LoginPageLocators:

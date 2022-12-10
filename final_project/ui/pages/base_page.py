@@ -36,6 +36,10 @@ class BasePage(object):
         element = self.find(locator)
         element.send_keys(Keys.ENTER)
 
+    def get_required_attribute(self, locator, attribute):
+        return self.find(locator).get_attribute(attribute)
+
+
     # def switch_to_second_tab(self):
     #     try:
     #         self.driver.switch_to.window(self.driver.window_handles[1])

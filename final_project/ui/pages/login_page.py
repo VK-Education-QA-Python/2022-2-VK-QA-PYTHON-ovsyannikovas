@@ -1,4 +1,4 @@
-import allure
+# import allure
 import pytest
 
 from ui.locators import basic_locators
@@ -27,5 +27,5 @@ class LoginPage(BasePage):
     def go_to_register(self):
         self.click(self.locators.CREATE_ACC_BUTTON)
 
-    def get_required_attribute(self, locator, attribute):
-        return self.find(locator).get_attribute(attribute)
+    # def get_required_attribute(self, locator, attribute):
+    #     return self.find(locator).get_attribute(attribute)

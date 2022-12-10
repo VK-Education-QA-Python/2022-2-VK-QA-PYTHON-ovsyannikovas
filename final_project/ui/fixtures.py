@@ -4,6 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
+from ui.pages.register_page import RegisterPage
 
 
 @pytest.fixture()
@@ -23,9 +24,9 @@ def driver(config):
 
 
 @pytest.fixture
-def main_page(driver):
+def main_page(driver, config):
     main_page = MainPage(driver=driver)
-    # main_page.authorize()
+    driver.get(''.join((config['url'], main_page.url)))
     return main_page
 
 
@@ -36,8 +37,8 @@ def login_page(driver, config):
     return login_page
 
 
-# @pytest.fixture
-# def register_page(driver, config):
-#     register_page = LoginPage(driver=driver)
-#     driver.get(''.join((config['url'], register_page.url)))
-#     return register_page
+@pytest.fixture
+def register_page(driver, config):
+    register_page = RegisterPage(driver=driver)
+    driver.get(''.join((config['url'], register_page.url)))
+    return register_page
