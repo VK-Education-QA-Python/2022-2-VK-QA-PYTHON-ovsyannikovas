@@ -1,6 +1,6 @@
 import faker
 
-from final_project.mysql.client import MysqlClient
+from mysql.client import MysqlClient
 
 fake = faker.Faker('ru_RU')
 

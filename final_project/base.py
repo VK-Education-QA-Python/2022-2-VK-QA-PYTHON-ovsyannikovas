@@ -11,6 +11,9 @@ class BaseCase:
     def setup(self, driver, config):
         self.driver = driver
         self.config = config
-        self.login_page = LoginPage(self.driver)
+        # self.login_page = LoginPage(self.driver)
         # self.register_page = RegisterPage(self.driver)
-        self.main_page = MainPage(self.driver)
+        # self.main_page = MainPage(self.driver)
+
+    def get_url_path(self):
+        return '/'.join(self.driver.current_url.split('/')[3:])

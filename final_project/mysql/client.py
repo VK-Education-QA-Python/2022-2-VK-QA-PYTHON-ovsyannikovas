@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
-from final_project.mysql.models import User
+from mysql.models import User
 
 class MysqlClient:
 
