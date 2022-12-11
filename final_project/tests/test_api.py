@@ -98,7 +98,7 @@ class TestApi(ApiBase):
 
 
 class TestApiLogin:
-    def test_login_user(self, create_fake_user):  # в начале регистрация
+    def test_login_user(self, create_fake_user):
         ...
         # response = self.api_client.post_login(data[''], '12345')
         # print(response)

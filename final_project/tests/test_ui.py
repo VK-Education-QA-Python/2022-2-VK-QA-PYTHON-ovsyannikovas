@@ -1,6 +1,8 @@
 import pytest
 from base import BaseCase
 import allure
+
+from tests.utils import switch_to_new_window
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
 from ui.pages.register_page import RegisterPage
@@ -172,3 +174,71 @@ class TestRegistration(BaseCase):
     def test_login_link(self, register_page):
         register_page.go_to_login()
         assert self.get_url_path() == LoginPage.url
+
+
+class TestMainPage(BaseCase):
+    def test_logout_button(self, main_page):
+        main_page.click(main_page.locators.LOGOUT_BUTTON)
+        assert self.get_url_path() == LoginPage.url
+
+    def test_quote(self, main_page):
+        assert main_page.find(main_page.locators.QUOTE)
+
+    def test_api_button(self, main_page):
+        main_page.click(main_page.locators.API_IMG)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://en.wikipedia.org/wiki/API'
+
+    def test_future_button(self, main_page):
+        main_page.click(main_page.locators.FUTURE_IMG)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://www.popularmechanics.com/technology/infrastructure/a29666802/future-of-the-internet/'
+
+    def test_smtp_button(self, main_page):
+        main_page.click(main_page.locators.SMTP_IMG)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://ru.wikipedia.org/wiki/SMTP'
+
+    def test_logo_clickability(self, main_page):
+        main_page.click(main_page.locators.LOGO_BUTTON)
+        assert self.get_url_path() == MainPage.url
+
+    def test_home_button(self, main_page):
+        main_page.click(main_page.locators.HOME_BUTTON)
+        assert self.get_url_path() == MainPage.url
+
+    def test_python_history_link(self, main_page):
+        main_page.click(main_page.locators.PYTHON_BUTTON)
+        main_page.click(main_page.locators.PYTHON_HISTORY_BUTTON)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+
+    def test_about_flask_link(self, main_page):
+        main_page.click(main_page.locators.PYTHON_BUTTON)
+        main_page.click(main_page.locators.ABOUT_FLASK_BUTTON)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+
+    def test_download_centos7(self, main_page):
+        main_page.click(main_page.locators.LINUX_BUTTON)
+        main_page.click(main_page.locators.DOWNLOAD_CENTOS7_BUTTON)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://www.centos.org/download/'
+
+    def test_wireshark_news(self, main_page):
+        main_page.click(main_page.locators.NETWORK_BUTTON)
+        main_page.click(main_page.locators.WIRESHARK_NEWS_BUTTON)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://www.wireshark.org/news/'
+
+    def test_wireshark_download(self, main_page):
+        main_page.click(main_page.locators.NETWORK_BUTTON)
+        main_page.click(main_page.locators.WIRESHARK_DOWNLOAD_BUTTON)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://www.wireshark.org/#download'
+
+    def test_tcp_dump_examples(self, main_page):
+        main_page.click(main_page.locators.NETWORK_BUTTON)
+        main_page.click(main_page.locators.TCP_DUMP_EXAMPLES)
+        current_url = switch_to_new_window(main_page.driver)
+        assert current_url == 'https://hackertarget.com/tcpdump-examples/'

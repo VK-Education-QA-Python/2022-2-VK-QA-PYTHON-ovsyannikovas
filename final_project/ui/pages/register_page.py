@@ -24,14 +24,6 @@ class RegisterPage(BasePage):
         else:
             self.click(self.locators.REGISTER_BUTTON)
 
-    # def authorize(self, username, password, enter=False):
-    #     self.enter_string(self.locators.USERNAME_FIELD, username)
-    #     self.enter_string(self.locators.PASSWORD_FIELD, password)
-    #     if enter:
-    #         self.hit_enter_key(self.locators.PASSWORD_FIELD)
-    #     else:
-    #         self.click(self.locators.LOGIN_BUTTON)
-    #
     def get_password_fields_type(self):
         return self.find(self.locators.PASSWORD2_FIELD).get_attribute('type'), self.find(
             self.locators.PASSWORD1_FIELD).get_attribute('type')

@@ -24,9 +24,11 @@ def driver(config):
 
 
 @pytest.fixture
-def main_page(driver, config):
+def main_page(driver, config, login_page, create_fake_user):
     main_page = MainPage(driver=driver)
-    driver.get(''.join((config['url'], main_page.url)))
+    driver.get(config['url'])
+    username, password = create_fake_user['username'], create_fake_user['password']
+    login_page.authorize(username, password)
     return main_page
 
 
