@@ -1,7 +1,6 @@
 import pytest
 from base import BaseCase
 import allure
-from api.api_base import ApiBase
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
 from ui.pages.register_page import RegisterPage
@@ -173,4 +172,3 @@ class TestRegistration(BaseCase):
     def test_login_link(self, register_page):
         register_page.go_to_login()
         assert self.get_url_path() == LoginPage.url
-

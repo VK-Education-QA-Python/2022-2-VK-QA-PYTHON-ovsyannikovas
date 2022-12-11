@@ -7,9 +7,11 @@ import requests
 
 class ApiClient:
 
-    def __init__(self, url):
+    def __init__(self, url, username=None, password=None):
         self.url = url  # f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}'
         self.session = requests.Session()
+        self.root_username = username
+        self.root_password = password
 
     def post_login(self, username, password):
         data = {
@@ -24,7 +26,9 @@ class ApiClient:
         print('post_login', response.status_code)
         return response
 
-    def add_user(self, name, surname, username, password, email, middle_name=None):
+    def add_user(self, name, surname, username, password, email, middle_name=None, root=True):
+        if root:
+            self.post_login(self.root_username, self.root_password)
         body = {
             "name": name,
             "surname": surname,
@@ -38,14 +42,16 @@ class ApiClient:
         print('add_user', response.status_code)
         return response
 
-    def delete_user(self, username, password):
-        self.post_login(username, password)
+    def delete_user(self, username, root=True):
+        if root:
+            self.post_login(self.root_username, self.root_password)
         response = self.session.delete(f'{self.url}api/user/{username}')
         print('delete_user', response.status_code)
         return response
 
-    def edit_users_password(self, username, old_password, new_password):
-        self.post_login(username, old_password)
+    def edit_users_password(self, username, new_password, root=True):
+        if root:
+            self.post_login(self.root_username, self.root_password)
         body = {
             "password": new_password
         }
@@ -53,15 +59,17 @@ class ApiClient:
         print(response.status_code)
         return response
 
-    def block_user(self, username, password):
-        self.post_login(username, password)
-        response = requests.post(f'{self.url}api/user/{username}/block')
+    def block_user(self, username, root=True):
+        if root:
+            self.post_login(self.root_username, self.root_password)
+        response = self.session.post(f'{self.url}api/user/{username}/block')
         print('block_user', response.status_code)
         return response
 
-    def unblock_user(self, username, password):
-        self.post_login(username, password)
-        response = requests.post(f'{self.url}api/user/{username}/accept')
+    def unblock_user(self, username, root=True):
+        if root:
+            self.post_login(self.root_username, self.root_password)
+        response = self.session.post(f'{self.url}api/user/{username}/accept')
         return response
 
     def get_status(self):
