@@ -28,13 +28,20 @@ class TestApi(ApiBase):
                                             password=data['password'], email=email, root=root)
         assert response.status_code == expected_status_code
 
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_add_with_no_password(self, mysql_builder, root, expected_status_code):
+        data = mysql_builder.get_fake_user()
+        response = self.api_client.add_user(name=data['name'], surname=data['surname'], username=data['username'],
+                                            password='', email=data['email'], root=root)
+        assert response.status_code == expected_status_code
+
     @pytest.mark.parametrize("root, expected_status_code", [(True, 200), (False, 401)])
     def test_edit_users_password(self, mysql_builder,
-                                 create_fake_user, root, expected_status_code):  # пароль остается старый, но в таблице меняется
+                                 create_fake_user, root,
+                                 expected_status_code):  # пароль остается старый, но в таблице меняется
         username, password = create_fake_user['username'], create_fake_user['password']
         response = self.api_client.edit_users_password(username=username, new_password='12345', root=root)
         print(mysql_builder.client.select_by_username(username))
-        new_password = mysql_builder.client.select_by_username(username).password
         assert response.status_code == expected_status_code  # and new_password == '12345'
 
     @pytest.mark.parametrize("root, expected_status_code", [(True, 204), (False, 401)])

@@ -1,0 +1,54 @@
+version: '2.1'
+
+networks:
+  application_test:
+    driver: bridge
+
+services:
+  mysql:
+    image: "mysql:latest"
+    container_name: "mysql_container"
+    hostname: "mysql_host"
+    command: --init-file /home/init.sql
+    volumes:
+      - C:\Users\LenovoIdeaPad\PycharmProjects\2022-2-VK-QA-PYTHON-ovsyannikovas\final_project\mysql\init.sql:/home/init.sql
+    healthcheck:
+      test: [ "CMD", "mysql", "-h127.0.0.1", "-utest_qa", "-pqa_test" ]
+      timeout: 1s
+      retries: 30
+    networks:
+      - application_test
+    environment:
+      MYSQL_ROOT_PASSWORD: '0000'
+      MYSQL_DATABASE: vkeducation
+      MYSQL_USER: test_qa
+      MYSQL_PASSWORD: qa_test
+    ports:
+      - 3306:3306
+
+  mock:
+    image: "app_mock:latest"
+    container_name: "mock_container"
+    ports:
+      - 9000:9000
+    hostname: "mock_host"
+    networks:
+      - application_test
+    depends_on:
+      - mysql
+
+  app:
+    image: "myapp:latest"
+    container_name: "app_container"
+    hostname: "app_host"
+    ports:
+      - 8000:8000
+    volumes:
+      - C:\Users\LenovoIdeaPad\Desktop\app_config:/home
+    command: "/app/myapp --config=/home/app_config"
+    networks:
+      - application_test
+    depends_on:
+      - mysql
+      - mock
+

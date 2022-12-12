@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-USERS_ID = {}
+USERS_ID = {'test': 1, 'testuser': 2}
 
 
 @app.route("/vk_id/<username>", methods=["GET"])
