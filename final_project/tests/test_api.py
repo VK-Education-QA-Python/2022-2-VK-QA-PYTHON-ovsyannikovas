@@ -4,6 +4,13 @@ from api.api_base import ApiBase
 
 
 class TestApi(ApiBase):
+    @pytest.fixture(scope='function', autouse=True)
+    def create_root(self, mysql_builder):
+        mysql_builder.client.add_user(name='root', surname='root', username='rootroot', password='0000',
+                                      email='root@mail.ru')
+        yield
+        mysql_builder.client.delete_user('rootroot')
+
     @pytest.mark.parametrize("root, expected_status_code", [(True, 200), (False, 401)])
     def test_add_user(self, mysql_builder, root, expected_status_code):
         data = mysql_builder.get_fake_user()
