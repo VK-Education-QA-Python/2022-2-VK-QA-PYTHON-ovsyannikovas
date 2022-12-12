@@ -31,6 +31,3 @@ class RegisterPage(BasePage):
     def go_to_login(self):
         self.click(self.locators.LOGIN_BUTTON)
 
-    def get_text_error_message(self):
-        element = self.find(self.locators.REGISTER_ERROR_MESSAGE, 5)
-        return element.text

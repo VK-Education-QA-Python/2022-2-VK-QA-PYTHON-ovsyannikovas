@@ -2,7 +2,7 @@ import pytest
 from base import BaseCase
 import allure
 
-from tests.utils import switch_to_new_window
+# from tests.utils import switch_to_new_window
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
 from ui.pages.register_page import RegisterPage
@@ -22,26 +22,22 @@ class TestLogin(BaseCase):
     def test_valid_login_invalid_pass(self, login_page, create_fake_user):
         username, password = create_fake_user['username'], create_fake_user['password']
         login_page.authorize(username=username, password=password + 'A')
-        import time
-        time.sleep(1)
-        message_text = login_page.get_text_error_message()
+        message_text = login_page.get_text_error_message(login_page.locators.LOGIN_ERROR_MESSAGE)
         assert message_text == 'Invalid username or password'
 
     def test_invalid_login(self, login_page, create_fake_user):
         username, password = create_fake_user['username'], create_fake_user['password']
         login_page.authorize(username=username + 'A', password=password)
-        import time
-        time.sleep(1)
-        message_text = login_page.get_text_error_message()
+        message_text = login_page.get_text_error_message(login_page.locators.LOGIN_ERROR_MESSAGE)
         assert message_text == 'Invalid username or password'
 
     def test_secrecy_password(self, login_page):
         field_type = login_page.get_password_field_type()
         assert field_type == 'password'
 
-    def test_valid_email_login_valid_pass(self, login_page):
-        login_page.authorize(username='test@mail.ru', password='test')
-        assert self.get_url_path() == MainPage.url
+    # def test_valid_email_login_valid_pass(self, login_page):
+    #     login_page.authorize(username='test@mail.ru', password='test')
+    #     assert self.get_url_path() == MainPage.url
 
     def test_enter_key(self, login_page, create_fake_user):
         username, password = create_fake_user['username'], create_fake_user['password']
@@ -51,9 +47,7 @@ class TestLogin(BaseCase):
     def test_valid_login_with_space_invalid_pass(self, login_page, create_fake_user):
         username, password = create_fake_user['username'], create_fake_user['password']
         login_page.authorize(username=username + ' ', password=password)
-        import time
-        time.sleep(1)
-        message_text = login_page.get_text_error_message()
+        message_text = login_page.get_text_error_message(login_page.locators.LOGIN_ERROR_MESSAGE)
         assert message_text == 'Invalid username or password'
 
     def test_create_account_link(self, login_page):
@@ -92,7 +86,7 @@ class TestRegistration(BaseCase):
         mysql_builder.client.delete_user(data['username'])
         assert self.get_url_path() == MainPage.url
 
-    def test_valid_all_fields_eithout_middlename(self, register_page, mysql_builder):
+    def test_valid_all_fields_without_middlename(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
                                email=data['email'], password1=data['password'], password2=data['password'])
@@ -105,9 +99,7 @@ class TestRegistration(BaseCase):
         register_page.register(name=data['name'], surname=data['surname'], username=username,
                                email=data['email'], password1=data['password'], password2=data['password'],
                                middlename=data['middle_name'])
-        import time
-        time.sleep(1)
-        message_text = register_page.get_text_error_message()
+        message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'User already exist'
 
     def test_register_existent_email(self, register_page, create_fake_user, mysql_builder):
@@ -116,9 +108,7 @@ class TestRegistration(BaseCase):
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
                                email=email, password1=data['password'], password2=data['password'],
                                middlename=data['middle_name'])
-        import time
-        time.sleep(1)
-        message_text = register_page.get_text_error_message()
+        message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'User already exist'
 
     def test_different_passwords(self, register_page, mysql_builder):
@@ -126,9 +116,7 @@ class TestRegistration(BaseCase):
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
                                email=data['email'], password1=data['password'], password2=data['password'] + 'A',
                                middlename=data['middle_name'])
-        import time
-        time.sleep(1)
-        message_text = register_page.get_text_error_message()
+        message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'Passwords must match'
 
     def test_big_username(self, register_page, mysql_builder):
@@ -154,9 +142,7 @@ class TestRegistration(BaseCase):
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
                                email=data['username'], password1=data['password'], password2=data['password'],
                                middlename=data['middle_name'])
-        import time
-        time.sleep(1)
-        message_text = register_page.get_text_error_message()
+        message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'Invalid email address'
 
     def test_secrecy_password(self, register_page):
@@ -186,17 +172,17 @@ class TestMainPage(BaseCase):
 
     def test_api_button(self, main_page):
         main_page.click(main_page.locators.API_IMG)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://en.wikipedia.org/wiki/API'
 
     def test_future_button(self, main_page):
         main_page.click(main_page.locators.FUTURE_IMG)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.popularmechanics.com/technology/infrastructure/a29666802/future-of-the-internet/'
 
     def test_smtp_button(self, main_page):
         main_page.click(main_page.locators.SMTP_IMG)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://ru.wikipedia.org/wiki/SMTP'
 
     def test_logo_clickability(self, main_page):
@@ -210,35 +196,35 @@ class TestMainPage(BaseCase):
     def test_python_history_link(self, main_page):
         main_page.click(main_page.locators.PYTHON_BUTTON)
         main_page.click(main_page.locators.PYTHON_HISTORY_BUTTON)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
 
     def test_about_flask_link(self, main_page):
         main_page.click(main_page.locators.PYTHON_BUTTON)
         main_page.click(main_page.locators.ABOUT_FLASK_BUTTON)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
 
     def test_download_centos7(self, main_page):
         main_page.click(main_page.locators.LINUX_BUTTON)
         main_page.click(main_page.locators.DOWNLOAD_CENTOS7_BUTTON)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.centos.org/download/'
 
     def test_wireshark_news(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.WIRESHARK_NEWS_BUTTON)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.wireshark.org/news/'
 
     def test_wireshark_download(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.WIRESHARK_DOWNLOAD_BUTTON)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.wireshark.org/#download'
 
     def test_tcp_dump_examples(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.TCP_DUMP_EXAMPLES)
-        current_url = switch_to_new_window(main_page.driver)
+        current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://hackertarget.com/tcpdump-examples/'

@@ -39,9 +39,17 @@ class BasePage(object):
     def get_required_attribute(self, locator, attribute):
         return self.find(locator).get_attribute(attribute)
 
+    def get_text_error_message(self, locator):
+        attempt = 5
+        element = self.find(locator)
+        while element.text == '' and attempt > 0:
+            element = self.find(locator)
+            attempt -= 1
+        return element.text
 
-    # def switch_to_second_tab(self):
-    #     try:
-    #         self.driver.switch_to.window(self.driver.window_handles[1])
-    #     except IndexError:
-    #         raise SecondTabError('Новая вкладка не найдена!')
+    def switch_to_second_tab(self):
+        try:
+            self.driver.switch_to.window(self.driver.window_handles[1])
+            return self.driver.current_url
+        except IndexError:
+            raise

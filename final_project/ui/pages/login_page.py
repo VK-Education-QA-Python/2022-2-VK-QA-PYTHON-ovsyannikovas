@@ -1,5 +1,6 @@
 # import allure
 import pytest
+from selenium.webdriver.support.wait import WebDriverWait
 
 from ui.locators import basic_locators
 from ui.pages.base_page import BasePage
@@ -16,10 +17,6 @@ class LoginPage(BasePage):
             self.hit_enter_key(self.locators.PASSWORD_FIELD)
         else:
             self.click(self.locators.LOGIN_BUTTON)
-
-    def get_text_error_message(self):
-        element = self.find(self.locators.LOGIN_ERROR_MESSAGE)
-        return element.text
 
     def get_password_field_type(self):
         return self.find(self.locators.PASSWORD_FIELD).get_attribute('type')
