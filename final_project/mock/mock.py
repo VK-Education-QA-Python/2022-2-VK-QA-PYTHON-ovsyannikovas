@@ -1,16 +1,17 @@
 #!/usr/bin/env python3.8
-
+import sqlalchemy
 from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-USERS_ID = {'test': 1, 'testuser': 2}
-
 
 @app.route("/vk_id/<username>", methods=["GET"])
 def get_user_vk_id(username):
-    if user_id := USERS_ID.get(username):
-        return jsonify({"vk_id": str(user_id)}), 200
+    url = f'mysql+pymysql://test_qa:qa_test@mysql_host:3306/vkeducation'
+    connection = sqlalchemy.create_engine(url).connect()
+    result = connection.execute(f'SELECT id FROM test_users WHERE username="{username}"').fetchone()
+    if result:
+        return jsonify({"vk_id": str(result[0])}), 200
     else:
         return jsonify({}), 404
 

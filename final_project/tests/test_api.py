@@ -42,12 +42,50 @@ class TestApi(ApiBase):
                                             password='', email=data['email'], root=root)
         assert response.status_code == expected_status_code
 
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_add_with_no_email(self, mysql_builder, root, expected_status_code):
+        data = mysql_builder.get_fake_user()
+        response = self.api_client.add_user(name=data['name'], surname=data['surname'], username=data['username'],
+                                            password=data['password'], email='', root=root)
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_add_with_no_username(self, mysql_builder, root, expected_status_code):
+        data = mysql_builder.get_fake_user()
+        response = self.api_client.add_user(name=data['name'], surname=data['surname'], username='',
+                                            password=data['password'], email=data['email'], root=root)
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_add_empty(self, root, expected_status_code):
+        response = self.api_client.add_user(name='', surname='', username='',
+                                            password='', email='', root=root)
+        assert response.status_code == expected_status_code
+
     @pytest.mark.parametrize("root, expected_status_code", [(True, 200), (False, 401)])
     def test_edit_users_password(self, mysql_builder,
                                  create_fake_user, root,
                                  expected_status_code):  # пароль остается старый, но в таблице меняется
-        username, password = create_fake_user['username'], create_fake_user['password']
+        username = create_fake_user['username']
         response = self.api_client.edit_users_password(username=username, new_password='12345', root=root)
+        print(mysql_builder.client.select_by_username(username))
+        assert response.status_code == expected_status_code  # and new_password == '12345'
+
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_edit_users_password_with_old(self, mysql_builder,
+                                 create_fake_user, root,
+                                 expected_status_code):  # пароль остается старый, но в таблице меняется
+        username, password = create_fake_user['username'], create_fake_user['password']
+        response = self.api_client.edit_users_password(username=username, new_password=password, root=root)
+        print(mysql_builder.client.select_by_username(username))
+        assert response.status_code == expected_status_code  # and new_password == '12345'
+
+    @pytest.mark.parametrize("root, expected_status_code", [(True, 400), (False, 401)])
+    def test_edit_users_password_with_empty(self, mysql_builder,
+                                 create_fake_user, root,
+                                 expected_status_code):  # пароль остается старый, но в таблице меняется
+        username = create_fake_user['username']
+        response = self.api_client.edit_users_password(username=username, new_password='', root=root)
         print(mysql_builder.client.select_by_username(username))
         assert response.status_code == expected_status_code  # and new_password == '12345'
 
@@ -111,15 +149,15 @@ class TestApi(ApiBase):
         assert response.status_code == 200
 
 
-class TestApiLogin:
-    def test_login_user(self, create_fake_user):
-        ...
-        # response = self.api_client.post_login(data[''], '12345')
-        # print(response)
-
-    def test_login_non_existent_user(self):
-        ...
-
-
-class TestApiRegistration:
-    ...
+# class TestApiLogin:
+#     def test_login_user(self, create_fake_user):
+#         ...
+#         # response = self.api_client.post_login(data[''], '12345')
+#         # print(response)
+#
+#     def test_login_non_existent_user(self):
+#         ...
+#
+#
+# class TestApiRegistration:
+#     ...

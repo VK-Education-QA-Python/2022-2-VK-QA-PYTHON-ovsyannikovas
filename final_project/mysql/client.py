@@ -2,9 +2,10 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from mysql.models import User
 
+
 class MysqlClient:
 
-    def __init__(self, db_name='vkeducation', user='root', password='0000'):
+    def __init__(self, db_name='vkeducation', user='test_qa', password='qa_test'):
         self.user = user
         self.port = '3306'
         self.password = password
@@ -55,4 +56,3 @@ class MysqlClient:
         user = self.select_by_username(username)
         user.access = 0
         self.session.commit()
-
