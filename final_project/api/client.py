@@ -8,7 +8,7 @@ import requests
 class ApiClient:
 
     def __init__(self, url, username=None, password=None):
-        self.url = url  # f'http://{settings.MOCK_HOST}:{settings.MOCK_PORT}'
+        self.url = url
         self.session = requests.Session()
         self.root_username = username
         self.root_password = password
@@ -23,7 +23,6 @@ class ApiClient:
             'Content-Type': 'application/x-www-form-urlencoded'
         }
         response = self.session.post(f'{self.url}login', data=data, headers=headers)
-        print('post_login', response.status_code)
         return response
 
     def add_user(self, name, surname, username, password, email, middle_name=None, root=True):
@@ -39,14 +38,12 @@ class ApiClient:
         if username:
             body['middle_name'] = middle_name
         response = self.session.post(f'{self.url}api/user', json=body)
-        print('add_user', response.status_code)
         return response
 
     def delete_user(self, username, root=True):
         if root:
             self.post_login(self.root_username, self.root_password)
         response = self.session.delete(f'{self.url}api/user/{username}')
-        print('delete_user', response.status_code)
         return response
 
     def edit_users_password(self, username, new_password, root=True):
@@ -56,14 +53,12 @@ class ApiClient:
             "password": new_password
         }
         response = self.session.put(f'{self.url}api/user/{username}/change-password', data=body)
-        print(response.status_code)
         return response
 
     def block_user(self, username, root=True):
         if root:
             self.post_login(self.root_username, self.root_password)
         response = self.session.post(f'{self.url}api/user/{username}/block')
-        print('block_user', response.status_code)
         return response
 
     def unblock_user(self, username, root=True):

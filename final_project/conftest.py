@@ -56,5 +56,6 @@ def create_fake_user(mysql_builder):
 
     yield data
 
-    mysql_builder.client.delete_user(data['username'])
+    if mysql_builder.client.is_user_exist(data['username']):
+        mysql_builder.client.delete_user(data['username'])
 

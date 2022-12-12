@@ -49,8 +49,44 @@ class MysqlClient:
         return user
 
     def select_by_username(self, username):
-        # поменять на get
+        self.session.commit()
         return self.session.query(User).filter(User.username == username).first()
+
+    def select_by_email(self, email):
+        self.session.commit()
+        return self.session.query(User).filter(User.email == email).first()
+
+    def is_user_exist(self, username):
+        user = self.select_by_username(username)
+        return True if user else False
+
+    def get_access_by_username(self, username):
+        try:
+            user = self.select_by_username(username)
+            return user.access
+        except AttributeError:
+            return None
+
+    def get_password_by_username(self, username):
+        try:
+            user = self.select_by_username(username)
+            return user.password
+        except AttributeError:
+            return None
+
+    def get_email_by_username(self, username):
+        try:
+            user = self.select_by_username(username)
+            return user.email
+        except AttributeError:
+            return None
+
+    def get_username_by_email(self, email):
+        try:
+            user = self.select_by_email(email)
+            return user.username
+        except AttributeError:
+            return None
 
     def block_by_username(self, username):
         user = self.select_by_username(username)
