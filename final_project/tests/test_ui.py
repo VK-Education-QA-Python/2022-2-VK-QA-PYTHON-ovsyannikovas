@@ -228,3 +228,12 @@ class TestMainPage(BaseCase):
         main_page.click(main_page.locators.TCP_DUMP_EXAMPLES)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://hackertarget.com/tcpdump-examples/'
+
+
+class TestUiMock(BaseCase):
+    def test_vkid(self, main_page, create_fake_user, mysql_builder):
+        username = create_fake_user['username']
+        user_id = mysql_builder.client.get_id_by_username(username)
+        vk_id = main_page.get_vk_id()
+        assert vk_id == user_id
+

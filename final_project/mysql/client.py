@@ -60,6 +60,13 @@ class MysqlClient:
         user = self.select_by_username(username)
         return True if user else False
 
+    def get_id_by_username(self, username):
+        try:
+            user = self.select_by_username(username)
+            return user.id
+        except AttributeError:
+            return None
+
     def get_access_by_username(self, username):
         try:
             user = self.select_by_username(username)

@@ -40,11 +40,15 @@ class BasePage(object):
         return self.find(locator).get_attribute(attribute)
 
     def get_text_error_message(self, locator):
-        attempt = 5
-        element = self.find(locator)
+        attempt = 30
+        element = self.find(locator, 5)
         while element.text == '' and attempt > 0:
-            element = self.find(locator)
+            element = self.find(locator, 5)
             attempt -= 1
+
+        # while element.text == '' and attempt > 0:
+        #     element = self.find(locator)
+        #     attempt -= 1
         return element.text
 
     def switch_to_second_tab(self):

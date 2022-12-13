@@ -4,8 +4,44 @@ networks:
   application_test:
     driver: bridge
 
+#networks:
+#  selenoid:
+#    external:
+#      name: selenoid
+
+#networks:
+#  mynetwork:
+#    external: true
+
 services:
+#  selenoid:
+#    networks:
+#      - mynetwork
+#    image: 'aerokube/selenoid:latest'
+#    container_name: 'selenoid'
+#    volumes:
+#      - C:\Users\LenovoIdeaPad\PycharmProjects\2022-2-VK-QA-PYTHON-ovsyannikovas\final_project\selenoid:/home/selenoid/
+#      - //var/run/docker.sock:/var/run/docker.sock
+#    command:
+#      [ '-conf', '/home/selenoid/browsers.json', '-container-network', 'mynetwork' ]
+#    ports:
+#      - '4444:4444'
+
+#  selenoid-ui:
+##    networks:
+##      - selenoid
+#    image: "aerokube/selenoid-ui"
+#    hostname: "selenoid_ui_host"
+#    container_name: 'selenoid_ui_container'
+#    links:
+#      - 'selenoid:selenoid'
+#    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+#    ports:
+#      - '8080:8080'
+
   mysql:
+    networks:
+      - application_test
     image: "mysql:latest"
     container_name: "mysql_container"
     hostname: "mysql_host"
@@ -16,8 +52,6 @@ services:
       test: [ "CMD", "mysql", "-h127.0.0.1", "-utest_qa", "-pqa_test" ]
       timeout: 1s
       retries: 30
-    networks:
-      - application_test
     environment:
       MYSQL_ROOT_PASSWORD: '0000'
       MYSQL_DATABASE: vkeducation
@@ -27,17 +61,19 @@ services:
       - 3306:3306
 
   mock:
+    networks:
+      - application_test
     image: "app_mock:latest"
     container_name: "mock_container"
     ports:
       - 9000:9000
     hostname: "mock_host"
-    networks:
-      - application_test
     depends_on:
       - mysql
 
   app:
+    networks:
+      - application_test
     image: "myapp:latest"
     container_name: "app_container"
     hostname: "app_host"
@@ -46,9 +82,9 @@ services:
     volumes:
       - C:\Users\LenovoIdeaPad\Desktop\app_config:/home
     command: "/app/myapp --config=/home/app_config"
-    networks:
-      - application_test
     depends_on:
       - mysql
       - mock
+#      - selenoid
+#      - selenoid-ui
 

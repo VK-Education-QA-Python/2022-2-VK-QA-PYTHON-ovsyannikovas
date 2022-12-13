@@ -9,6 +9,7 @@ class ApiClient:
 
     def __init__(self, url, username=None, password=None):
         self.url = url
+        self.vk_id_url = 'http://localhost:9000/'
         self.session = requests.Session()
         self.root_username = username
         self.root_password = password
@@ -23,6 +24,24 @@ class ApiClient:
             'Content-Type': 'application/x-www-form-urlencoded'
         }
         response = self.session.post(f'{self.url}login', data=data, headers=headers)
+        return response
+
+    def post_register(self, name, surname, username, password, confirm, email, term, middlename=''):
+        data = {
+            'name': name,
+            'surname': surname,
+            'middlename': middlename,
+            'username': username,
+            'email': email,
+            'password': password,
+            'confirm': confirm,
+            'term': term,
+            'submit': 'Register'
+        }
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        response = self.session.post(f'{self.url}reg', data=data, headers=headers)
         return response
 
     def add_user(self, name, surname, username, password, email, middle_name=None, root=True):
@@ -70,3 +89,7 @@ class ApiClient:
     def get_status(self):
         response = requests.get(f'{self.url}status')
         return response
+
+    def get_vk_id_by_username(self, username):
+        response = self.session.get(f'{self.vk_id_url}vk_id/{username}')
+        return response.json(), response.status_code

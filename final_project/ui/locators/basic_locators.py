@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 
 class MainPageLocators:
     LOGOUT_BUTTON = (By.CSS_SELECTOR, "[href='/logout']")
+    USER_VK_ID = (By.CSS_SELECTOR, '#login-name ul li:last-child')
 
     LOGO_BUTTON = (By.CSS_SELECTOR, '[class*="uk-navbar-brand"]')
     HOME_BUTTON = (By.CSS_SELECTOR, "[href='/']")
