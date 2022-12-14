@@ -1,4 +1,4 @@
-# import allure
+import allure
 import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -10,6 +10,7 @@ class LoginPage(BasePage):
     url = 'login'
     locators = basic_locators.LoginPageLocators()
 
+    @allure.step('Авторизация пользователя через соответствующую форму')
     def authorize(self, username, password, enter=False):
         self.enter_string(self.locators.USERNAME_FIELD, username)
         self.enter_string(self.locators.PASSWORD_FIELD, password)
@@ -18,9 +19,11 @@ class LoginPage(BasePage):
         else:
             self.click(self.locators.LOGIN_BUTTON)
 
+    @allure.story('Взятие типа поля пароля в форме авторизации')
     def get_password_field_type(self):
         return self.find(self.locators.PASSWORD_FIELD).get_attribute('type')
 
+    @allure.story('Нажатие на ссылку на форму регистрации')
     def go_to_register(self):
         self.click(self.locators.CREATE_ACC_BUTTON)
 

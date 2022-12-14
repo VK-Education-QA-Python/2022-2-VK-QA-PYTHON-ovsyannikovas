@@ -1,6 +1,7 @@
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage
@@ -9,14 +10,29 @@ from ui.pages.register_page import RegisterPage
 
 @pytest.fixture()
 def driver(config):
-    # version = "105.0.5195.19"
     url = config["url"]
     headless = config["headless"]
+    selenoid = config['selenoid']
+    vnc = config['vnc']
     chrome_options = webdriver.ChromeOptions()
     if headless:
         chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),
-                              options=chrome_options)
+    if selenoid:
+        capabilities = {
+            "browserName": "chrome",
+            "browserVersion": "107.0",
+            "selenoid:options": {
+                "enableVideo": False,
+                # "AdditionalNetworks": ["selenoid"],
+                # "enableVNC": vnc
+            },
+        }
+        driver = webdriver.Remote(
+            'http://localhost:4444/wd/hub/',
+            desired_capabilities=capabilities,
+            options=chrome_options)
+    else:
+        driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=chrome_options)
     driver.get(url)
     driver.maximize_window()
     yield driver

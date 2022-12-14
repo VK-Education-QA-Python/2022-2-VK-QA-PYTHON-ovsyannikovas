@@ -1,3 +1,4 @@
+import allure
 import pytest
 from selenium.common import TimeoutException
 from selenium.webdriver import Keys
@@ -32,6 +33,7 @@ class BasePage(object):
         element.clear()
         element.send_keys(text)
 
+    @allure.step('Нажатие на enter')
     def hit_enter_key(self, locator):
         element = self.find(locator)
         element.send_keys(Keys.ENTER)
@@ -39,8 +41,9 @@ class BasePage(object):
     def get_required_attribute(self, locator, attribute):
         return self.find(locator).get_attribute(attribute)
 
+    @allure.step('Получение текста сообщения об ошибке')
     def get_text_error_message(self, locator):
-        attempt = 30
+        attempt = 50
         element = self.find(locator, 5)
         while element.text == '' and attempt > 0:
             element = self.find(locator, 5)
@@ -51,6 +54,7 @@ class BasePage(object):
         #     attempt -= 1
         return element.text
 
+    @allure.step('Переход на открывшуюся вкладку')
     def switch_to_second_tab(self):
         try:
             self.driver.switch_to.window(self.driver.window_handles[1])

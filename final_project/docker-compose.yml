@@ -1,35 +1,28 @@
 version: '2.1'
 
 networks:
-  application_test:
-    driver: bridge
-
-#networks:
-#  selenoid:
-#    external:
-#      name: selenoid
-
-#networks:
-#  mynetwork:
-#    external: true
+  selenoid:
+    external: False
+    name: selenoid
 
 services:
 #  selenoid:
 #    networks:
-#      - mynetwork
-#    image: 'aerokube/selenoid:latest'
-#    container_name: 'selenoid'
+#      - selenoid
+#    image: 'aerokube/selenoid:1.10.7'
+##    hostname: "selenoid_host"
+#    container_name: 'selenoid_container'
 #    volumes:
 #      - C:\Users\LenovoIdeaPad\PycharmProjects\2022-2-VK-QA-PYTHON-ovsyannikovas\final_project\selenoid:/home/selenoid/
 #      - //var/run/docker.sock:/var/run/docker.sock
 #    command:
-#      [ '-conf', '/home/selenoid/browsers.json', '-container-network', 'mynetwork' ]
+#      [ '-conf', '/home/selenoid/browsers.json', '-container-network', 'selenoid' ]
 #    ports:
 #      - '4444:4444'
 
 #  selenoid-ui:
-##    networks:
-##      - selenoid
+#    networks:
+#      - selenoid
 #    image: "aerokube/selenoid-ui"
 #    hostname: "selenoid_ui_host"
 #    container_name: 'selenoid_ui_container'
@@ -41,7 +34,7 @@ services:
 
   mysql:
     networks:
-      - application_test
+      - selenoid
     image: "mysql:latest"
     container_name: "mysql_container"
     hostname: "mysql_host"
@@ -62,7 +55,7 @@ services:
 
   mock:
     networks:
-      - application_test
+      - selenoid
     image: "app_mock:latest"
     container_name: "mock_container"
     ports:
@@ -73,7 +66,7 @@ services:
 
   app:
     networks:
-      - application_test
+      - selenoid
     image: "myapp:latest"
     container_name: "app_container"
     hostname: "app_host"
@@ -85,6 +78,6 @@ services:
     depends_on:
       - mysql
       - mock
-#      - selenoid
-#      - selenoid-ui
+      - selenoid
+      - selenoid-ui
 

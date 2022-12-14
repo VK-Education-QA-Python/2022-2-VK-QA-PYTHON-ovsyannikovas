@@ -3,6 +3,8 @@ import os
 import shutil
 import sys
 
+import allure
+
 from mysql.builder import MysqlBuilder
 from mysql.client import MysqlClient
 from ui.fixtures import *
@@ -65,6 +67,7 @@ def mysql_builder(mysql_client) -> MysqlBuilder:
     return MysqlBuilder(mysql_client)
 
 
+@allure.step('Создание пользователя в БД')
 @pytest.fixture(scope='function')
 def create_fake_user(mysql_builder):
     person = mysql_builder.add_fake_user()
@@ -73,9 +76,23 @@ def create_fake_user(mysql_builder):
         'password': person.password,
         'email': person.email
     }
+    allure.step(f'Создан пользователь с username: {data["username"]}, email: {data["email"]}, password: {data["password"]}')
 
     yield data
 
     if mysql_builder.client.is_user_exist(data['username']):
         mysql_builder.client.delete_user(data['username'])
 
+
+@pytest.fixture(scope='session')
+def repo_root():
+    return os.path.abspath(os.path.join(__file__, os.path.pardir))
+
+
+@pytest.fixture(scope='session')
+def temp_dir(request, repo_root):
+    test_dir = '\\'.join(('\\'.join((repo_root, 'logs')), request._pyfuncitem.nodeid.replace('::', '\\')))
+    # test_dir = os.path.join(os.path.join(repo_root, 'logs'), request._pyfuncitem.nodeid)
+    if not os.path.exists(test_dir):
+        os.makedirs(test_dir)
+    return test_dir

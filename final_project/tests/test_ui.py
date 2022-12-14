@@ -8,6 +8,8 @@ from ui.pages.main_page import MainPage
 from ui.pages.register_page import RegisterPage
 
 
+@allure.epic('UI')
+@allure.feature('Проверка формы авторизации')
 class TestLogin(BaseCase):
     def test_fields_existence(self, login_page):
         username_field = login_page.find(login_page.locators.USERNAME_FIELD)
@@ -35,10 +37,6 @@ class TestLogin(BaseCase):
         field_type = login_page.get_password_field_type()
         assert field_type == 'password'
 
-    # def test_valid_email_login_valid_pass(self, login_page):
-    #     login_page.authorize(username='test@mail.ru', password='test')
-    #     assert self.get_url_path() == MainPage.url
-
     def test_enter_key(self, login_page, create_fake_user):
         username, password = create_fake_user['username'], create_fake_user['password']
         login_page.authorize(username=username, password=password, enter=True)
@@ -65,7 +63,10 @@ class TestLogin(BaseCase):
         assert minlength == '6' and maxlength == '16'
 
 
+@allure.epic('UI')
+@allure.feature('Проверка формы регистрации')
 class TestRegistration(BaseCase):
+    @allure.story('Проверка существования полей регистрации"')
     def test_fields_existence(self, register_page):
         name_field = register_page.find(register_page.locators.NAME_FIELD)
         surname_field = register_page.find(register_page.locators.SURNAME_FIELD)
@@ -78,6 +79,7 @@ class TestRegistration(BaseCase):
         assert name_field and surname_field and middlename_field and username_field and email_field and \
                password1_field and password2_field and term_checkbox
 
+    @allure.story('Проверка регистрации пользователя с валидными данными"')
     def test_valid_all_fields(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
@@ -86,6 +88,7 @@ class TestRegistration(BaseCase):
         mysql_builder.client.delete_user(data['username'])
         assert self.get_url_path() == MainPage.url
 
+    @allure.story('Проверка регистрации пользователя с валидными данными без middlename"')
     def test_valid_all_fields_without_middlename(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
@@ -93,6 +96,7 @@ class TestRegistration(BaseCase):
         mysql_builder.client.delete_user(data['username'])
         assert self.get_url_path() == MainPage.url
 
+    @allure.story('Проверка регистрации пользователя с существующим username"')
     def test_register_existent_username(self, register_page, create_fake_user, mysql_builder):
         username, password = create_fake_user['username'], create_fake_user['password']
         data = mysql_builder.get_fake_user()
@@ -102,6 +106,7 @@ class TestRegistration(BaseCase):
         message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'User already exist'
 
+    @allure.story('Проверка регистрации пользователя с существующим email"')
     def test_register_existent_email(self, register_page, create_fake_user, mysql_builder):
         email = create_fake_user['email']
         data = mysql_builder.get_fake_user()
@@ -111,6 +116,7 @@ class TestRegistration(BaseCase):
         message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'User already exist'
 
+    @allure.story('Проверка регистрации пользователя с несовпадающими паролями"')
     def test_different_passwords(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
@@ -119,6 +125,7 @@ class TestRegistration(BaseCase):
         message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'Passwords must match'
 
+    @allure.story('Проверка регистрации пользователя с длинным username"')
     def test_big_username(self, register_page, mysql_builder):
         maxlength = register_page.get_required_attribute(register_page.locators.USERNAME_FIELD, 'maxlength')
         data = mysql_builder.get_fake_user()
@@ -128,6 +135,7 @@ class TestRegistration(BaseCase):
                                middlename=data['middle_name'])
         assert self.get_url_path() == RegisterPage.url
 
+    @allure.story('Проверка регистрации пользователя с коротким username"')
     def test_small_username(self, register_page, mysql_builder):
         minlength = register_page.get_required_attribute(register_page.locators.USERNAME_FIELD, 'minlength')
         data = mysql_builder.get_fake_user()
@@ -137,6 +145,7 @@ class TestRegistration(BaseCase):
                                middlename=data['middle_name'])
         assert self.get_url_path() == RegisterPage.url
 
+    @allure.story('Проверка регистрации пользователя с невалидным email"')
     def test_email_without_dog(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
@@ -145,10 +154,12 @@ class TestRegistration(BaseCase):
         message_text = register_page.get_text_error_message(register_page.locators.REGISTER_ERROR_MESSAGE)
         assert message_text == 'Invalid email address'
 
+    @allure.story('Проверка секретности пароля в форме регистрации"')
     def test_secrecy_password(self, register_page):
         field1_type, field2_type = register_page.get_password_fields_type()
         assert field1_type == field2_type == 'password'
 
+    @allure.story('Проверка регистрации пользователя с валидными данными по нажатию enter"')
     def test_valid_all_fields_enter_key(self, register_page, mysql_builder):
         data = mysql_builder.get_fake_user()
         register_page.register(name=data['name'], surname=data['surname'], username=data['username'],
@@ -157,83 +168,116 @@ class TestRegistration(BaseCase):
         mysql_builder.client.delete_user(data['username'])
         assert self.get_url_path() == MainPage.url
 
+    @allure.story('Проверка ссылки на форму авторизации"')
     def test_login_link(self, register_page):
         register_page.go_to_login()
         assert self.get_url_path() == LoginPage.url
 
 
+@allure.epic('UI')
+@allure.feature('Проверка главной страницы')
 class TestMainPage(BaseCase):
+    @allure.story('Проверка кнопки "logout"')
     def test_logout_button(self, main_page):
+        allure.step('Нажатие на кнопку "logout"')
         main_page.click(main_page.locators.LOGOUT_BUTTON)
         assert self.get_url_path() == LoginPage.url
 
+    @allure.story('Проверка цитаты о Python')
     def test_quote(self, main_page):
+        allure.step('Проверка наличия цитаты')
         assert main_page.find(main_page.locators.QUOTE)
 
+    @allure.story('Проверка ссылки "What is an API?"')
     def test_api_button(self, main_page):
+        allure.step('Нажатие на картинку')
         main_page.click(main_page.locators.API_IMG)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://en.wikipedia.org/wiki/API'
 
+    @allure.story('Проверка ссылки "Future of internet"')
     def test_future_button(self, main_page):
+        allure.step('Нажатие на картинку')
         main_page.click(main_page.locators.FUTURE_IMG)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.popularmechanics.com/technology/infrastructure/a29666802/future-of-the-internet/'
 
+    @allure.story('Проверка ссылки "Lets talk about SMTP?"')
     def test_smtp_button(self, main_page):
+        allure.step('Нажатие на картинку')
         main_page.click(main_page.locators.SMTP_IMG)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://ru.wikipedia.org/wiki/SMTP'
 
+    @allure.story('Проверка кликабельности логотипа')
     def test_logo_clickability(self, main_page):
+        allure.step('Нажатие на логотип')
         main_page.click(main_page.locators.LOGO_BUTTON)
         assert self.get_url_path() == MainPage.url
 
+    @allure.story('Проверка ссылки "HOME"')
     def test_home_button(self, main_page):
+        allure.step('Нажатие на ссылку "HOME"')
         main_page.click(main_page.locators.HOME_BUTTON)
         assert self.get_url_path() == MainPage.url
 
+    @allure.story('Проверка ссылки "Python History"')
     def test_python_history_link(self, main_page):
+        allure.step('Нажатие на ссылку "Python"')
         main_page.click(main_page.locators.PYTHON_BUTTON)
-        main_page.click(main_page.locators.PYTHON_HISTORY_BUTTON)
-        current_url = main_page.switch_to_second_tab()
-        assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+        try:
+            allure.step('Нажатие на ссылку "Python History"')
+            main_page.click(main_page.locators.PYTHON_HISTORY_BUTTON)
+            current_url = main_page.switch_to_second_tab()
+            assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+        except AttributeError:
+            pytest.fail('Кнопка "Python History" отсутствует на странице')
 
+    @allure.story('Проверка ссылки "About Flask"')
     def test_about_flask_link(self, main_page):
+        allure.step('Нажатие на ссылку "Python"')
         main_page.click(main_page.locators.PYTHON_BUTTON)
-        main_page.click(main_page.locators.ABOUT_FLASK_BUTTON)
-        current_url = main_page.switch_to_second_tab()
-        assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+        try:
+            allure.step('Нажатие на ссылку "About Flask"')
+            main_page.click(main_page.locators.ABOUT_FLASK_BUTTON)
+            current_url = main_page.switch_to_second_tab()
+            assert current_url == 'https://en.wikipedia.org/wiki/History_of_Python'
+        except AttributeError:
+            pytest.fail('Кнопка "About Flask" отсутствует на странице')
 
+    @allure.story('Проверка ссылки "Download Centos 7"')
     def test_download_centos7(self, main_page):
+        allure.step('Нажатие на ссылку "Linux"')
         main_page.click(main_page.locators.LINUX_BUTTON)
+        allure.step('Нажатие на ссылку "Download Centos 7"')
         main_page.click(main_page.locators.DOWNLOAD_CENTOS7_BUTTON)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.centos.org/download/'
 
+    @allure.story('Проверка ссылки "NEWS"')
     def test_wireshark_news(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.WIRESHARK_NEWS_BUTTON)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.wireshark.org/news/'
 
+    @allure.story('Проверка ссылки "DOWNLOAD"')
     def test_wireshark_download(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.WIRESHARK_DOWNLOAD_BUTTON)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://www.wireshark.org/#download'
 
+    @allure.story('Проверка ссылки "EXAMPLES"')
     def test_tcp_dump_examples(self, main_page):
         main_page.click(main_page.locators.NETWORK_BUTTON)
         main_page.click(main_page.locators.TCP_DUMP_EXAMPLES)
         current_url = main_page.switch_to_second_tab()
         assert current_url == 'https://hackertarget.com/tcpdump-examples/'
 
-
-class TestUiMock(BaseCase):
+    @allure.story('Проверка наличия VK ID')
     def test_vkid(self, main_page, create_fake_user, mysql_builder):
         username = create_fake_user['username']
         user_id = mysql_builder.client.get_id_by_username(username)
         vk_id = main_page.get_vk_id()
         assert vk_id == user_id
-

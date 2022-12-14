@@ -1,3 +1,4 @@
+import allure
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from mysql.models import User
@@ -42,6 +43,7 @@ class MysqlClient:
         self.session.commit()
         return test_user
 
+    @allure.step('Удаление пользователя из БД')
     def delete_user(self, username):
         user = self.select_by_username(username)
         self.session.delete(user)
@@ -56,10 +58,12 @@ class MysqlClient:
         self.session.commit()
         return self.session.query(User).filter(User.email == email).first()
 
+    @allure.step('Проверка существования пользователя в БД')
     def is_user_exist(self, username):
         user = self.select_by_username(username)
         return True if user else False
 
+    @allure.step('Получение id пользователя из БД по username')
     def get_id_by_username(self, username):
         try:
             user = self.select_by_username(username)
@@ -67,6 +71,7 @@ class MysqlClient:
         except AttributeError:
             return None
 
+    @allure.step('Получение access пользователя из БД по username')
     def get_access_by_username(self, username):
         try:
             user = self.select_by_username(username)
@@ -74,6 +79,7 @@ class MysqlClient:
         except AttributeError:
             return None
 
+    @allure.step('Получение пароля пользователя из БД по username')
     def get_password_by_username(self, username):
         try:
             user = self.select_by_username(username)
@@ -81,6 +87,7 @@ class MysqlClient:
         except AttributeError:
             return None
 
+    @allure.step('Получение email пользователя из БД по username')
     def get_email_by_username(self, username):
         try:
             user = self.select_by_username(username)
@@ -88,6 +95,7 @@ class MysqlClient:
         except AttributeError:
             return None
 
+    @allure.step('Получение username пользователя из БД по email')
     def get_username_by_email(self, email):
         try:
             user = self.select_by_email(email)
@@ -95,6 +103,7 @@ class MysqlClient:
         except AttributeError:
             return None
 
+    @allure.step('Блокировка пользователя в БД по username')
     def block_by_username(self, username):
         user = self.select_by_username(username)
         user.access = 0

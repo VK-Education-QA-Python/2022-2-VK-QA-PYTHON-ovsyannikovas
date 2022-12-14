@@ -1,3 +1,4 @@
+import allure
 from faker import Faker
 
 from ui.locators import basic_locators
@@ -9,6 +10,7 @@ class RegisterPage(BasePage):
     locators = basic_locators.RegisterPageLocators()
     fake = Faker(locale="ru_RU")
 
+    @allure.step('Регистрация пользователя через форму регистрации')
     def register(self, name, surname, username, email, password1, password2, middlename=False, enter=False):
         self.enter_string(self.locators.NAME_FIELD, name)
         self.enter_string(self.locators.SURNAME_FIELD, surname)
@@ -24,10 +26,11 @@ class RegisterPage(BasePage):
         else:
             self.click(self.locators.REGISTER_BUTTON)
 
+    @allure.story('Взятие типов полей паролей в форме регистрации')
     def get_password_fields_type(self):
         return self.find(self.locators.PASSWORD2_FIELD).get_attribute('type'), self.find(
             self.locators.PASSWORD1_FIELD).get_attribute('type')
 
+    @allure.story('Нажатие на ссылку на форму авторизации')
     def go_to_login(self):
         self.click(self.locators.LOGIN_BUTTON)
-

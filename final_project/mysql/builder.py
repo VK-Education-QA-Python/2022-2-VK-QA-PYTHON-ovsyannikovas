@@ -1,3 +1,4 @@
+import allure
 import faker
 
 from mysql.client import MysqlClient
@@ -20,6 +21,7 @@ class MysqlBuilder:
         )
 
     @staticmethod
+    @allure.step('Генерация данных для пользователя')
     def get_fake_user():
         return {
             'name': fake.first_name(),
